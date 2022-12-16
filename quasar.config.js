@@ -30,7 +30,7 @@ module.exports = configure((/* ctx */) => ({
   // --> boot files are part of "main.js"
   // https://v2.quasar.dev/quasar-cli-vite/boot-files
   boot: [
-
+    'vue3GoogleLogin',
   ],
 
   // https://v2.quasar.dev/quasar-cli-vite/quasar-config-js#css
@@ -59,7 +59,7 @@ module.exports = configure((/* ctx */) => ({
       node: 'node16',
     },
 
-    vueRouterMode: 'hash', // available values: 'hash', 'history'
+    vueRouterMode: 'history', // available values: 'hash', 'history'
     // vueRouterBase,
     // vueDevtools,
     // vueOptionsAPI: false,
@@ -68,7 +68,7 @@ module.exports = configure((/* ctx */) => ({
 
     // publicPath: '/',
     // analyze: true,
-    // env: {},
+    env: require('dotenv').config().parsed,
     // rawDefine: {}
     // ignorePublicFolder: true,
     // minify: false,

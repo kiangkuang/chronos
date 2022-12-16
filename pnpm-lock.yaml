@@ -7,6 +7,7 @@ specifiers:
   '@typescript-eslint/eslint-plugin': ^5.10.0
   '@typescript-eslint/parser': ^5.10.0
   autoprefixer: ^10.4.2
+  dotenv: ^16.0.3
   eslint: ^8.10.0
   eslint-config-airbnb-base: ^15.0.0
   eslint-plugin-import: ^2.20.1
@@ -16,6 +17,7 @@ specifiers:
   typescript: ^4.5.4
   vue: ^3.0.0
   vue-router: ^4.0.0
+  vue3-google-login: ^2.0.12
 
 dependencies:
   '@quasar/extras': 1.15.6
@@ -23,6 +25,7 @@ dependencies:
   quasar: 2.10.2
   vue: 3.2.45
   vue-router: 4.1.6_vue@3.2.45
+  vue3-google-login: 2.0.12_vue@3.2.45
 
 devDependencies:
   '@quasar/app-vite': 1.1.3_kljzsq2fhtxj2pgdcgccqufm2e
@@ -30,6 +33,7 @@ devDependencies:
   '@typescript-eslint/eslint-plugin': 5.44.0_fnsv2sbzcckq65bwfk7a5xwslu
   '@typescript-eslint/parser': 5.44.0_hsf322ms6xhhd4b5ne6lb74y4a
   autoprefixer: 10.4.13
+  dotenv: 16.0.3
   eslint: 8.28.0
   eslint-config-airbnb-base: 15.0.0_ktrec6dplf4now6nlbc6d67jee
   eslint-plugin-import: 2.26.0_vfrilbydaxalswvos6uuh4sxs4
@@ -1099,6 +1103,11 @@ packages:
     engines: {node: '>=10'}
     dependencies:
       is-obj: 2.0.0
+    dev: true
+
+  /dotenv/16.0.3:
+    resolution: {integrity: sha512-7GO6HghkA5fYG9TYnNxi14/7K9f5occMlp3zXAuSxn7CKCxt9xbNWG7yF8hTCSUchlfWSe3uLmlPfigevRItzQ==}
+    engines: {node: '>=12'}
     dev: true
 
   /ee-first/1.1.1:
@@ -3370,6 +3379,14 @@ packages:
       '@vue/runtime-dom': 3.2.45
       '@vue/server-renderer': 3.2.45_vue@3.2.45
       '@vue/shared': 3.2.45
+
+  /vue3-google-login/2.0.12_vue@3.2.45:
+    resolution: {integrity: sha512-gKc9yS6NDgU2JLKXZGYu9NQzIBd/CTXFFo1IU8nUZsP5QFjRuylSDZQ7tLUeueL+SYHJiE/FzxB5bQlcTdQ7Wg==}
+    peerDependencies:
+      vue: ^3.0.3
+    dependencies:
+      vue: 3.2.45
+    dev: false
 
   /wcwidth/1.0.1:
     resolution: {integrity: sha512-XHPEwS0q6TaxcvG85+8EYkbiCux2XtWG2mkc47Ng2A77BQu9+DqIOJldST4HgPkuea7dvKSj5VgX3P1d4rW8Tg==}
