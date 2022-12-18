@@ -8,7 +8,12 @@
           Chronos
         </q-toolbar-title>
 
-        <GoogleLogin :callback="callback" prompt auto-login/>
+        <GoogleLogin
+          :button-config="{
+            type: 'icon',
+            shape: 'circle',
+          }"
+        />
       </q-toolbar>
     </q-header>
 
@@ -19,18 +24,49 @@
 </template>
 
 <script setup lang="ts">
+import { GoogleLogin, googleSdkLoaded } from 'vue3-google-login';
+import { useScriptTag, until } from '@vueuse/core';
 import { ref } from 'vue';
-import { GoogleLogin, CallbackTypes } from 'vue3-google-login';
 
-const callback = (response: CallbackTypes.CredentialPopupResponse) => {
-  // This callback will be triggered when the user selects or login to
-  // his Google account from the popup
-  console.log('Handle the response', response);
+const DISCOVERY_DOC = 'https://www.googleapis.com/discovery/v1/apis/calendar/v3/rest';
+const CLIENT_ID = process.env.GOOGLE_API_CLIENT_ID || '';
+const API_KEY = 'AIzaSyC4YLLkJAGPP1wmyiqzmkkaDzgZFwfPO1w';
+const SCOPES = 'https://www.googleapis.com/auth/calendar.readonly';
+
+const gapiLoaded = ref(false);
+
+useScriptTag('https://apis.google.com/js/api.js', () => {
+  window.gapi.load('client', async () => {
+    await window.gapi.client.init({
+      apiKey: API_KEY,
+      discoveryDocs: [DISCOVERY_DOC],
+    });
+    gapiLoaded.value = true;
+  });
+});
+
+const getEvents = async () => {
+  await until(gapiLoaded).toBeTruthy();
+
+  const response = await window.gapi.client.calendar.events.list({
+    calendarId: 'primary',
+    timeMin: (new Date()).toISOString(),
+    showDeleted: false,
+    singleEvents: true,
+    maxResults: 10,
+    orderBy: 'startTime',
+  });
+  console.log(response);
 };
 
-const leftDrawerOpen = ref(false);
+googleSdkLoaded(async (google) => {
+  google.accounts.oauth2
+    .initTokenClient({
+      client_id: CLIENT_ID,
+      scope: SCOPES,
+      callback: getEvents,
+    })
+    .requestAccessToken();
+});
 
-function toggleLeftDrawer() {
-  leftDrawerOpen.value = !leftDrawerOpen.value;
-}
 </script>
