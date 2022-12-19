@@ -13,6 +13,9 @@
     "test": "echo \"No test specified\" && exit 0"
   },
   "dependencies": {
+    "@fullcalendar/core": "^5.11.3",
+    "@fullcalendar/timegrid": "^5.11.3",
+    "@fullcalendar/vue3": "^5.11.3",
     "@quasar/extras": "^1.0.0",
     "@vueuse/core": "^9.7.0",
     "pinia": "^2.0.11",
