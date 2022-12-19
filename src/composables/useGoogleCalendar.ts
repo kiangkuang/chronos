@@ -36,9 +36,9 @@ const checkToken = async (callback: () => void) => {
     .initTokenClient({
       client_id: CLIENT_ID,
       scope: SCOPES,
-      callback: () => {
+      callback: async () => {
         isAuthenticated.value = true;
-        callback();
+        await callback();
         isLoading.value = false;
       },
     });
@@ -49,7 +49,7 @@ const checkToken = async (callback: () => void) => {
     tokenClient.requestAccessToken();
   } else {
     isAuthenticated.value = true;
-    callback();
+    await callback();
     isLoading.value = false;
   }
 };
