@@ -11,7 +11,7 @@
         <q-btn
           flat
           round
-          icon="sync"
+          :icon="isAuthenticated ? 'sync': 'login'"
           :loading="isLoading"
           @click="updateEvents"
         >
@@ -38,5 +38,5 @@
 <script setup lang="ts">
 import { useGoogleCalendar } from 'src/composables/useGoogleCalendar';
 
-const { updateEvents, isLoading } = useGoogleCalendar();
+const { updateEvents, isLoading, isAuthenticated } = useGoogleCalendar();
 </script>

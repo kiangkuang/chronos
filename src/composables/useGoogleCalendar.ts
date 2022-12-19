@@ -1,4 +1,4 @@
-import { until, useScriptTag } from '@vueuse/core';
+import { refAutoReset, until, useScriptTag } from '@vueuse/core';
 import { ref } from 'vue';
 import { IEvent } from '../interfaces/event';
 
@@ -10,7 +10,8 @@ const SCOPES = 'https://www.googleapis.com/auth/calendar.readonly';
 const gapiLoaded = ref(false);
 const gsiLoaded = ref(false);
 const events = ref<IEvent[]>([]);
-const isLoading = ref(false);
+const isAuthenticated = ref(false);
+const isLoading = refAutoReset(false, 30 * 1000);
 
 useScriptTag('https://apis.google.com/js/api.js', () => {
   window.gapi.load('client', async () => {
@@ -36,6 +37,7 @@ const checkToken = async (callback: () => void) => {
       client_id: CLIENT_ID,
       scope: SCOPES,
       callback: () => {
+        isAuthenticated.value = true;
         callback();
         isLoading.value = false;
       },
@@ -46,6 +48,7 @@ const checkToken = async (callback: () => void) => {
     // when establishing a new session.
     tokenClient.requestAccessToken();
   } else {
+    isAuthenticated.value = true;
     callback();
     isLoading.value = false;
   }
@@ -71,4 +74,5 @@ export const useGoogleCalendar = () => ({
   updateEvents,
   events,
   isLoading,
+  isAuthenticated,
 });
