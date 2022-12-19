@@ -1,7 +1,8 @@
-import { EventSourceInput } from '@fullcalendar/core';
 import { until, useScriptTag } from '@vueuse/core';
 import { ref } from 'vue';
 import { googleSdkLoaded } from 'vue3-google-login';
+import { IEvent } from '../interfaces/event';
+import { ITokenClient } from '../interfaces/tokenClient';
 
 const CLIENT_ID = process.env.GOOGLE_API_CLIENT_ID || '';
 const API_KEY = process.env.GOOGLE_API_KEY;
@@ -10,10 +11,9 @@ const SCOPES = 'https://www.googleapis.com/auth/calendar.readonly';
 
 const gapiLoaded = ref(false);
 const gsiLoaded = ref(false);
-const events = ref<EventSourceInput>([]);
+const events = ref<IEvent[]>([]);
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-let tokenClient: any;
+let tokenClient: ITokenClient;
 
 useScriptTag('https://apis.google.com/js/api.js', () => {
   window.gapi.load('client', async () => {
@@ -52,18 +52,13 @@ const checkToken = async (callback: () => void) => {
 const getEvents = async () => {
   const response = await window.gapi.client.calendar.events.list({
     calendarId: 'primary',
-    timeMin: (new Date()).toISOString(),
-    timeMax: (new Date(new Date().getTime() + 1000 * 60 * 60 * 24 * 14)).toISOString(),
+    timeMin: (new Date(new Date().getTime() - 1000 * 60 * 60 * 24 * 3)).toISOString(), // TODO: start of week
+    timeMax: (new Date(new Date().getTime() + 1000 * 60 * 60 * 24 * 14)).toISOString(), // TODO: start of week + 14 days
     showDeleted: false,
     singleEvents: true,
   });
 
-  events.value = response.result.items.map((x) => ({
-    id: x.id,
-    title: x.summary,
-    start: x.start.dateTime ?? x.start.date,
-    end: x.end.dateTime ?? x.end.date,
-  }));
+  events.value = response.result.items;
 };
 
 const updateEvents = () => {

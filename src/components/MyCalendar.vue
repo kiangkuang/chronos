@@ -6,13 +6,24 @@
 import '@fullcalendar/core/vdom';
 import FullCalendar from '@fullcalendar/vue3';
 import timeGridPlugin from '@fullcalendar/timegrid';
-import { CalendarOptions } from '@fullcalendar/core';
+import { CalendarOptions, EventInput } from '@fullcalendar/core';
 import { useGoogleCalendar } from 'src/composables/useGoogleCalendar';
 import { computed, ref } from 'vue';
 
-const { events } = useGoogleCalendar();
-
 const selected = ref<string[]>([]);
+
+const { events: _events } = useGoogleCalendar();
+const events = computed(() => _events.value.map<EventInput>((x) => {
+  const isSelected = selected.value.includes(x.id ?? '');
+  return {
+    id: x.id,
+    start: x.start.dateTime ?? x.start.date,
+    end: x.end.dateTime ?? x.end.date,
+    title: x.summary,
+    backgroundColor: isSelected ? '#3788d8' : 'white',
+    textColor: isSelected ? 'white' : '#3788d8',
+  };
+}));
 
 const calendarOptions = computed<CalendarOptions>(() => ({
   plugins: [timeGridPlugin],
@@ -28,20 +39,12 @@ const calendarOptions = computed<CalendarOptions>(() => ({
     startTime: '11:00',
     endTime: '18:00',
   },
-  eventBackgroundColor: 'white',
-  eventTextColor: '#3788d8',
   eventClick: ({ el, event }) => {
     el.blur();
 
-    if (selected.value.includes(event.id)) {
-      selected.value = selected.value.filter((x) => x !== event.id);
-      event.setProp('backgroundColor', undefined);
-      event.setProp('textColor', undefined);
-    } else {
-      selected.value = [...selected.value, event.id];
-      event.setProp('backgroundColor', '#3788d8');
-      event.setProp('textColor', 'white');
-    }
+    selected.value = selected.value.includes(event.id)
+      ? selected.value.filter((x) => x !== event.id)
+      : [...selected.value, event.id];
   },
 }));
 
