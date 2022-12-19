@@ -17,7 +17,7 @@
         >
           <template v-slot:loading>
             <q-spinner/>
-            <q-tooltip anchor="center left" self="center right" class="text-body1">
+            <q-tooltip anchor="center left" self="center right" class="text-body2 bg-dark">
               Sign in with Google!
             </q-tooltip>
           </template>
