@@ -10,6 +10,7 @@ const SCOPES = 'https://www.googleapis.com/auth/calendar.readonly';
 const gapiLoaded = ref(false);
 const gsiLoaded = ref(false);
 const events = ref<IEvent[]>([]);
+const isLoading = ref(false);
 
 useScriptTag('https://apis.google.com/js/api.js', () => {
   window.gapi.load('client', async () => {
@@ -26,6 +27,7 @@ useScriptTag('https://accounts.google.com/gsi/client', () => {
 });
 
 const checkToken = async (callback: () => void) => {
+  isLoading.value = true;
   await until(gsiLoaded).toBeTruthy();
   await until(gapiLoaded).toBeTruthy();
 
@@ -33,15 +35,19 @@ const checkToken = async (callback: () => void) => {
     .initTokenClient({
       client_id: CLIENT_ID,
       scope: SCOPES,
-      callback,
+      callback: () => {
+        callback();
+        isLoading.value = false;
+      },
     });
 
   if (window.gapi.client.getToken() === null) {
     // Prompt the user to select a Google Account and ask for consent to share their data
     // when establishing a new session.
-    tokenClient?.requestAccessToken();
+    tokenClient.requestAccessToken();
   } else {
     callback();
+    isLoading.value = false;
   }
 };
 
@@ -64,4 +70,5 @@ const updateEvents = () => {
 export const useGoogleCalendar = () => ({
   updateEvents,
   events,
+  isLoading,
 });

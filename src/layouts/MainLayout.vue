@@ -9,12 +9,22 @@
         </q-toolbar-title>
 
         <q-btn
-          color="white"
-          text-color="black"
-          dense
+          flat
           round
           icon="sync"
+          :loading="isLoading"
           @click="updateEvents"
+        >
+          <template v-slot:loading>
+            <q-spinner/>
+            <q-tooltip anchor="center left" self="center right" class="text-body1">
+              Sign in with Google!
+            </q-tooltip>
+          </template>
+        </q-btn>
+        <q-spinner-radio
+          color="primary"
+          size="2em"
         />
       </q-toolbar>
     </q-header>
@@ -28,5 +38,5 @@
 <script setup lang="ts">
 import { useGoogleCalendar } from 'src/composables/useGoogleCalendar';
 
-const { updateEvents } = useGoogleCalendar();
+const { updateEvents, isLoading } = useGoogleCalendar();
 </script>
