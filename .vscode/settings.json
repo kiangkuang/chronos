@@ -15,8 +15,12 @@
   "typescript.tsdk": "node_modules/typescript/lib",
   "cSpell.words": [
     "chronos",
+    "composables",
     "fullcalendar",
     "gapi",
-    "pinia"
+    "pinia",
+    "timegrid",
+    "vdom",
+    "vueuse"
   ]
 }

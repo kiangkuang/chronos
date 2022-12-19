@@ -2,17 +2,19 @@
   <q-layout view="hHh lpR fFf">
     <q-header elevated>
       <q-toolbar>
-        <q-icon name="schedule" size="sm" />
+        <q-icon name="schedule" size="md" />
 
         <q-toolbar-title>
           Chronos
         </q-toolbar-title>
 
-        <GoogleLogin
-          :button-config="{
-            type: 'icon',
-            shape: 'circle',
-          }"
+        <q-btn
+          color="white"
+          text-color="black"
+          dense
+          round
+          icon="sync"
+          @click="updateEvents"
         />
       </q-toolbar>
     </q-header>
@@ -24,70 +26,7 @@
 </template>
 
 <script setup lang="ts">
-import { GoogleLogin, googleSdkLoaded } from 'vue3-google-login';
-import { useScriptTag, until, invoke } from '@vueuse/core';
-import { ref } from 'vue';
+import { useGoogleCalendar } from 'src/composables/useGoogleCalendar';
 
-const DISCOVERY_DOC = 'https://www.googleapis.com/discovery/v1/apis/calendar/v3/rest';
-const CLIENT_ID = process.env.GOOGLE_API_CLIENT_ID || '';
-const API_KEY = 'AIzaSyC4YLLkJAGPP1wmyiqzmkkaDzgZFwfPO1w';
-const SCOPES = 'https://www.googleapis.com/auth/calendar.readonly';
-
-const gapiLoaded = ref(false);
-const gsiLoaded = ref(false);
-
-useScriptTag('https://apis.google.com/js/api.js', () => {
-  window.gapi.load('client', async () => {
-    await window.gapi.client.init({
-      apiKey: API_KEY,
-      discoveryDocs: [DISCOVERY_DOC],
-    });
-    gapiLoaded.value = true;
-  });
-});
-
-const getEvents = async () => {
-  const response = await window.gapi.client.calendar.events.list({
-    calendarId: 'primary',
-    timeMin: (new Date()).toISOString(),
-    showDeleted: false,
-    singleEvents: true,
-    maxResults: 10,
-    orderBy: 'startTime',
-  });
-
-  return response.result.items.map((x) => ({
-    title: x.summary,
-    start: x.start.dateTime ?? x.start.date,
-    end: x.end.dateTime ?? x.end.date,
-  }));
-};
-
-let tokenClient: any;
-googleSdkLoaded(async (google) => {
-  tokenClient = google.accounts.oauth2
-    .initTokenClient({
-      client_id: CLIENT_ID,
-      scope: SCOPES,
-      callback: getEvents,
-    });
-  gsiLoaded.value = true;
-});
-
-invoke(async () => {
-  await until(gsiLoaded).toBeTruthy();
-  await until(gapiLoaded).toBeTruthy();
-
-  const a = window.gapi.client.getToken();
-  console.log(a);
-  if (a === null) {
-    // Prompt the user to select a Google Account and ask for consent to share their data
-    // when establishing a new session.
-    tokenClient.requestAccessToken({ prompt: 'consent' });
-  } else {
-    // Skip display of account chooser and consent dialog for an existing session.
-    tokenClient.requestAccessToken({ prompt: '' });
-  }
-});
-
+const { updateEvents } = useGoogleCalendar();
 </script>
