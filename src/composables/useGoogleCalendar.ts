@@ -53,13 +53,13 @@ const getEvents = async () => {
   const response = await window.gapi.client.calendar.events.list({
     calendarId: 'primary',
     timeMin: (new Date()).toISOString(),
+    timeMax: (new Date(new Date().getTime() + 1000 * 60 * 60 * 24 * 14)).toISOString(),
     showDeleted: false,
     singleEvents: true,
-    maxResults: 10,
-    orderBy: 'startTime',
   });
 
   events.value = response.result.items.map((x) => ({
+    id: x.id,
     title: x.summary,
     start: x.start.dateTime ?? x.start.date,
     end: x.end.dateTime ?? x.end.date,
