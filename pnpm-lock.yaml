@@ -8,6 +8,7 @@ specifiers:
   '@quasar/extras': ^1.0.0
   '@types/gapi': ^0.0.43
   '@types/gapi.calendar': ^3.0.6
+  '@types/google.accounts': ^0.0.4
   '@types/node': ^12.20.21
   '@typescript-eslint/eslint-plugin': ^5.10.0
   '@typescript-eslint/parser': ^5.10.0
@@ -23,7 +24,6 @@ specifiers:
   typescript: ^4.5.4
   vue: ^3.0.0
   vue-router: ^4.0.0
-  vue3-google-login: ^2.0.12
 
 dependencies:
   '@fullcalendar/core': 5.11.3
@@ -35,12 +35,12 @@ dependencies:
   quasar: 2.10.2
   vue: 3.2.45
   vue-router: 4.1.6_vue@3.2.45
-  vue3-google-login: 2.0.12_vue@3.2.45
 
 devDependencies:
   '@quasar/app-vite': 1.1.3_kljzsq2fhtxj2pgdcgccqufm2e
   '@types/gapi': 0.0.43
   '@types/gapi.calendar': 3.0.6
+  '@types/google.accounts': 0.0.4
   '@types/node': 12.20.55
   '@typescript-eslint/eslint-plugin': 5.44.0_fnsv2sbzcckq65bwfk7a5xwslu
   '@typescript-eslint/parser': 5.44.0_hsf322ms6xhhd4b5ne6lb74y4a
@@ -349,6 +349,10 @@ packages:
 
   /@types/gapi/0.0.43:
     resolution: {integrity: sha512-GbnoTC1psXR1XlBE76LW0eanE/a56iGUzbUOImEI8/xXHuppdbhhIKX9Z71mTut2XoFADh58PgfRg1cyD7TnTw==}
+    dev: true
+
+  /@types/google.accounts/0.0.4:
+    resolution: {integrity: sha512-X42obEgMx+Ptt3RZShgfRNLxGfm9PTLB/zdQkVBYtjnQnbQvTdbU02kZuS6pahp7LA9a5tUxB5vGBnD81SUhjg==}
     dev: true
 
   /@types/har-format/1.2.9:
@@ -3472,14 +3476,6 @@ packages:
       '@vue/runtime-dom': 3.2.45
       '@vue/server-renderer': 3.2.45_vue@3.2.45
       '@vue/shared': 3.2.45
-
-  /vue3-google-login/2.0.12_vue@3.2.45:
-    resolution: {integrity: sha512-gKc9yS6NDgU2JLKXZGYu9NQzIBd/CTXFFo1IU8nUZsP5QFjRuylSDZQ7tLUeueL+SYHJiE/FzxB5bQlcTdQ7Wg==}
-    peerDependencies:
-      vue: ^3.0.3
-    dependencies:
-      vue: 3.2.45
-    dev: false
 
   /wcwidth/1.0.1:
     resolution: {integrity: sha512-XHPEwS0q6TaxcvG85+8EYkbiCux2XtWG2mkc47Ng2A77BQu9+DqIOJldST4HgPkuea7dvKSj5VgX3P1d4rW8Tg==}

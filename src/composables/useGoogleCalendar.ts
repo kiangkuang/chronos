@@ -1,8 +1,6 @@
 import { until, useScriptTag } from '@vueuse/core';
 import { ref } from 'vue';
-import { googleSdkLoaded } from 'vue3-google-login';
 import { IEvent } from '../interfaces/event';
-import { ITokenClient } from '../interfaces/tokenClient';
 
 const CLIENT_ID = process.env.GOOGLE_API_CLIENT_ID || '';
 const API_KEY = process.env.GOOGLE_API_KEY;
@@ -12,8 +10,6 @@ const SCOPES = 'https://www.googleapis.com/auth/calendar.readonly';
 const gapiLoaded = ref(false);
 const gsiLoaded = ref(false);
 const events = ref<IEvent[]>([]);
-
-let tokenClient: ITokenClient;
 
 useScriptTag('https://apis.google.com/js/api.js', () => {
   window.gapi.load('client', async () => {
@@ -25,12 +21,7 @@ useScriptTag('https://apis.google.com/js/api.js', () => {
   });
 });
 
-googleSdkLoaded(async (google) => {
-  tokenClient = google.accounts.oauth2
-    .initTokenClient({
-      client_id: CLIENT_ID,
-      scope: SCOPES,
-    });
+useScriptTag('https://accounts.google.com/gsi/client', () => {
   gsiLoaded.value = true;
 });
 
@@ -38,7 +29,12 @@ const checkToken = async (callback: () => void) => {
   await until(gsiLoaded).toBeTruthy();
   await until(gapiLoaded).toBeTruthy();
 
-  tokenClient.callback = callback;
+  const tokenClient = window.google.accounts.oauth2
+    .initTokenClient({
+      client_id: CLIENT_ID,
+      scope: SCOPES,
+      callback,
+    });
 
   if (window.gapi.client.getToken() === null) {
     // Prompt the user to select a Google Account and ask for consent to share their data
