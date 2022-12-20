@@ -28,20 +28,22 @@ useScriptTag('https://accounts.google.com/gsi/client', () => {
   gsiLoaded.value = true;
 });
 
-const checkToken = async (callback: () => void) => {
+const checkToken = async (callback: () => Promise<void>) => {
   isLoading.value = true;
   await until(gsiLoaded).toBeTruthy();
   await until(gapiLoaded).toBeTruthy();
+
+  const callbackFn = async () => {
+    isAuthenticated.value = true;
+    await callback();
+    isLoading.value = false;
+  };
 
   const tokenClient = window.google.accounts.oauth2
     .initTokenClient({
       client_id: CLIENT_ID,
       scope: SCOPES,
-      callback: async () => {
-        isAuthenticated.value = true;
-        await callback();
-        isLoading.value = false;
-      },
+      callback: callbackFn,
     });
 
   if (window.gapi.client.getToken() === null) {
@@ -49,9 +51,7 @@ const checkToken = async (callback: () => void) => {
     // when establishing a new session.
     tokenClient.requestAccessToken();
   } else {
-    isAuthenticated.value = true;
-    await callback();
-    isLoading.value = false;
+    await callbackFn();
   }
 };
 
