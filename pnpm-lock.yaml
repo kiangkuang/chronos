@@ -9,6 +9,7 @@ specifiers:
   '@types/gapi': ^0.0.43
   '@types/gapi.calendar': ^3.0.6
   '@types/google.accounts': ^0.0.4
+  '@types/luxon': ^3.1.0
   '@types/node': ^12.20.21
   '@typescript-eslint/eslint-plugin': ^5.10.0
   '@typescript-eslint/parser': ^5.10.0
@@ -19,6 +20,7 @@ specifiers:
   eslint-config-airbnb-base: ^15.0.0
   eslint-plugin-import: ^2.20.1
   eslint-plugin-vue: ^9.0.0
+  luxon: ^3.1.1
   pinia: ^2.0.11
   quasar: ^2.6.0
   typescript: ^4.5.4
@@ -31,6 +33,7 @@ dependencies:
   '@fullcalendar/vue3': 5.11.3_vue@3.2.45
   '@quasar/extras': 1.15.6
   '@vueuse/core': 9.7.0_vue@3.2.45
+  luxon: 3.1.1
   pinia: 2.0.26_mgnvym7yiazkylwwogi5r767ue
   quasar: 2.10.2
   vue: 3.2.45
@@ -41,6 +44,7 @@ devDependencies:
   '@types/gapi': 0.0.43
   '@types/gapi.calendar': 3.0.6
   '@types/google.accounts': 0.0.4
+  '@types/luxon': 3.1.0
   '@types/node': 12.20.55
   '@typescript-eslint/eslint-plugin': 5.44.0_fnsv2sbzcckq65bwfk7a5xwslu
   '@typescript-eslint/parser': 5.44.0_hsf322ms6xhhd4b5ne6lb74y4a
@@ -365,6 +369,10 @@ packages:
 
   /@types/json5/0.0.29:
     resolution: {integrity: sha512-dRLjCWHYg4oaA77cxO64oO+7JwCwnIzkZPdrrC71jQmQtlhM556pwKo5bUzqvZndkVbeFLIIi+9TC40JNF5hNQ==}
+    dev: true
+
+  /@types/luxon/3.1.0:
+    resolution: {integrity: sha512-gCd/HcCgjqSxfMrgtqxCgYk/22NBQfypwFUG7ZAyG/4pqs51WLTcUzVp1hqTbieDYeHS3WoVEh2Yv/2l+7B0Vg==}
     dev: true
 
   /@types/mime/3.0.1:
@@ -2460,6 +2468,11 @@ packages:
     dependencies:
       yallist: 4.0.0
     dev: true
+
+  /luxon/3.1.1:
+    resolution: {integrity: sha512-Ah6DloGmvseB/pX1cAmjbFvyU/pKuwQMQqz7d0yvuDlVYLTs2WeDHQMpC8tGjm1da+BriHROW/OEIT/KfYg6xw==}
+    engines: {node: '>=12'}
+    dev: false
 
   /magic-string/0.25.9:
     resolution: {integrity: sha512-RmF0AsMzgt25qzqqLc1+MbHmhdx0ojF2Fvs4XnOqz2ZOBXzzkEwc/dJQZCYHAn7v1jbVOjAZfK8msRn4BxO4VQ==}

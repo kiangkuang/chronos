@@ -1,4 +1,5 @@
 import { refAutoReset, until, useScriptTag } from '@vueuse/core';
+import { DateTime } from 'luxon';
 import { ref } from 'vue';
 import { IEvent } from '../interfaces/event';
 
@@ -57,8 +58,8 @@ const checkToken = async (callback: () => void) => {
 const getEvents = async () => {
   const response = await window.gapi.client.calendar.events.list({
     calendarId: 'primary',
-    timeMin: (new Date(new Date().getTime() - 1000 * 60 * 60 * 24 * 3)).toISOString(), // TODO: start of week
-    timeMax: (new Date(new Date().getTime() + 1000 * 60 * 60 * 24 * 14)).toISOString(), // TODO: start of week + 14 days
+    timeMin: DateTime.now().startOf('week').toISO(),
+    timeMax: DateTime.now().startOf('week').plus({ weeks: 2 }).toISO(),
     showDeleted: false,
     singleEvents: true,
   });

@@ -18,6 +18,7 @@
     "composables",
     "fullcalendar",
     "gapi",
+    "luxon",
     "pinia",
     "timegrid",
     "vdom",

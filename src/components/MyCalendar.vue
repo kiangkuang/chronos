@@ -30,6 +30,7 @@ const calendarOptions = computed<CalendarOptions>(() => ({
   initialView: 'timeGridWeek',
   height: 'calc(100vh - 50px - 16px - 16px)',
   eventMinHeight: 20,
+  eventShortHeight: 40,
   events: events.value,
   slotEventOverlap: false,
   eventMaxStack: 2,
@@ -47,5 +48,4 @@ const calendarOptions = computed<CalendarOptions>(() => ({
       : [...selected.value, event.id];
   },
 }));
-
 </script>
