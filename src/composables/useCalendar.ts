@@ -1,5 +1,5 @@
 import { EventApi, EventInput } from '@fullcalendar/core';
-import { DateTime } from 'luxon';
+import { DateTime, Interval } from 'luxon';
 import { ref, computed } from 'vue';
 import { useGoogleCalendar } from './useGoogleCalendar';
 
@@ -19,36 +19,49 @@ const events = computed(() => _events.value.map<EventInput>((event) => {
 }));
 
 const days = [0, 1, 2, 3, 4, 7, 8, 9, 10, 11];
-const hours = [11, 12, 14, 15, 16, 17];
-const minutes = [0, 30];
 
-const timeSlots = days
-  .flatMap((day) => hours
-    .flatMap((hour) => minutes
-      .flatMap((minute) => DateTime.now().startOf('week').plus({ day, hour, minute }))));
+const fullDayIntervals = days.map((day) => Interval.fromDateTimes(
+  DateTime.now().startOf('week').plus({ day, hours: 0 }),
+  DateTime.now().startOf('week').plus({ day, hours: 24 }),
+));
 
-const totalHours = days.length * hours.length;
+const beforeWorkIntervals = days.map((day) => Interval.fromDateTimes(
+  DateTime.now().startOf('week').plus({ day, hours: 0 }),
+  DateTime.now().startOf('week').plus({ day, hours: 11 }),
+));
+
+const lunchIntervals = days.map((day) => Interval.fromDateTimes(
+  DateTime.now().startOf('week').plus({ day, hours: 13 }),
+  DateTime.now().startOf('week').plus({ day, hours: 14 }),
+));
+
+const afterWorkIntervals = days.map((day) => Interval.fromDateTimes(
+  DateTime.now().startOf('week').plus({ day, hours: 18 }),
+  DateTime.now().startOf('week').plus({ day, hours: 24 }),
+));
 
 const workHours = computed(() => {
-  let result = 0;
-  timeSlots.forEach((slot) => {
-    const slotStart = slot;
-    const slotEnd = slot.plus({ minutes: 30 });
-    let slotResult = slotEnd.diff(slotStart, 'hours').hours;
+  const eventIntervals = selectedEvents.value.map((event) => Interval.fromDateTimes(
+    DateTime.fromISO(event.start?.toISOString() ?? ''),
+    DateTime.fromISO(event.end?.toISOString() ?? ''),
+  ));
 
-    selectedEvents.value.forEach((event) => {
-      if (slotResult === 0) return;
-      const eventStart = DateTime.fromISO(event.start?.toISOString() ?? '');
-      const eventEnd = DateTime.fromISO(event.end?.toISOString() ?? '');
-      if (((eventEnd > slotStart)) && (eventStart < slotEnd)) {
-        slotResult = 0;
-      }
-    });
-
-    result += slotResult;
-  });
-  return result;
+  const free = Interval.xor([
+    ...fullDayIntervals,
+    ...beforeWorkIntervals,
+    ...lunchIntervals,
+    ...afterWorkIntervals,
+    ...eventIntervals,
+  ]);
+  return free.reduce((acc, curr) => acc + curr.toDuration('hours').hours, 0);
 });
+
+const totalHours = Interval.xor([
+  ...fullDayIntervals,
+  ...beforeWorkIntervals,
+  ...lunchIntervals,
+  ...afterWorkIntervals,
+]).reduce((acc, curr) => acc + curr.toDuration('hours').hours, 0);
 
 const toggleSelectedEvent = (event :EventApi) => {
   selectedEvents.value = selectedEvents.value.some((x) => x.id === event.id)
