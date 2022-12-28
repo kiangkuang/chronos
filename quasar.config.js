@@ -11,6 +11,8 @@
 /* eslint func-names: 0 */
 /* eslint global-require: 0 */
 
+require('dotenv').config();
+
 const { configure } = require('quasar/wrappers');
 
 module.exports = configure((/* ctx */) => ({
@@ -68,7 +70,10 @@ module.exports = configure((/* ctx */) => ({
 
     // publicPath: '/',
     // analyze: true,
-    env: require('dotenv').config().parsed,
+    env: {
+      GOOGLE_API_CLIENT_ID: process.env.GOOGLE_API_CLIENT_ID,
+      GOOGLE_API_KEY: process.env.GOOGLE_API_KEY,
+    },
     // rawDefine: {}
     // ignorePublicFolder: true,
     // minify: false,
