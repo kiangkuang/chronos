@@ -1,6 +1,4 @@
-# chronos (chronos)
-
-chronos
+# Chronos
 
 ## Install the dependencies
 ```bash

@@ -68,7 +68,7 @@ module.exports = configure((/* ctx */) => ({
 
     // rebuildCache: true, // rebuilds Vite/linter/etc cache on startup
 
-    // publicPath: '/',
+    publicPath: '/chronos',
     // analyze: true,
     env: {
       GOOGLE_API_CLIENT_ID: process.env.GOOGLE_API_CLIENT_ID,
