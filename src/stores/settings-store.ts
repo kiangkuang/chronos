@@ -8,17 +8,17 @@ export const useSettingsStore = defineStore('settings', () => {
 
   const days = ref([
     {
-      from: DateTime.now().startOf('week').toFormat('yyyy/MM/dd'),
-      to: DateTime.now().startOf('week').plus({ days: 4 }).toFormat('yyyy/MM/dd'),
+      from: DateTime.now().startOf('week'),
+      to: DateTime.now().startOf('week').plus({ days: 4 }).endOf('day'),
     },
     {
-      from: DateTime.now().startOf('week').plus({ days: 7 }).toFormat('yyyy/MM/dd'),
-      to: DateTime.now().startOf('week').plus({ days: 11 }).toFormat('yyyy/MM/dd'),
+      from: DateTime.now().startOf('week').plus({ days: 7 }),
+      to: DateTime.now().startOf('week').plus({ days: 11 }).endOf('day'),
     },
   ]);
 
-  const minDate = computed(() => DateTime.fromFormat(minBy(days.value, (x) => x.from)?.from ?? '', 'yyyy/MM/dd'));
-  const maxDate = computed(() => DateTime.fromFormat(maxBy(days.value, (x) => x.to)?.to ?? '', 'yyyy/MM/dd'));
+  const minDate = computed(() => minBy(days.value, (x) => x.from)?.from ?? DateTime.now().startOf('day'));
+  const maxDate = computed(() => maxBy(days.value, (x) => x.to)?.to ?? DateTime.now().endOf('day'));
 
   return {
     isDateSettingsOpen,
