@@ -1,5 +1,5 @@
 <template>
-  <q-popup-proxy anchor="bottom right" self="top right" :offset="[0, 4]" @hide="onHide">
+  <q-popup-proxy anchor="bottom right" self="top right" :offset="[0, 4]" @hide="updateEvents">
     <q-date
       color="blue-10"
       range
@@ -17,13 +17,7 @@ import { useSettingsStore } from 'src/stores/settings-store';
 import { computed } from 'vue';
 
 const { days } = storeToRefs(useSettingsStore());
-const { isAuthenticated, updateEvents } = useGoogleCalendar();
-
-const onHide = () => {
-  if (isAuthenticated.value) {
-    updateEvents();
-  }
-};
+const { updateEvents } = useGoogleCalendar();
 
 const format = 'yyyy/MM/dd';
 const model = computed({

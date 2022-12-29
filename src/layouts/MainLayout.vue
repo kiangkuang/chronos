@@ -23,12 +23,12 @@
         <q-btn
           flat
           round
-          icon="cloud_sync"
+          :icon="isAuthenticated ? 'face' : 'account_circle'"
           :loading="isLoading"
           @click="updateEvents"
         >
-          <q-tooltip anchor="bottom middle" self="top middle" class="text-body2 bg-dark">
-            {{ isAuthenticated ? "Re-sync calendar" : "Sign in with Google" }}
+          <q-tooltip v-if="!isAuthenticated" anchor="bottom middle" self="top middle" class="text-body2 bg-dark">
+            Sign in with Google
           </q-tooltip>
 
           <template v-slot:loading>
