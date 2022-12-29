@@ -1,5 +1,5 @@
 <template>
-  <q-popup-proxy anchor="bottom middle" self="top middle">
+  <q-popup-proxy anchor="bottom middle" self="top middle" @hide="onHide">
     <q-date
       color="blue-10"
       range
@@ -12,10 +12,18 @@
 <script setup lang="ts">
 import { DateTime } from 'luxon';
 import { storeToRefs } from 'pinia';
+import { useGoogleCalendar } from 'src/composables/useGoogleCalendar';
 import { useSettingsStore } from 'src/stores/settings-store';
 import { computed } from 'vue';
 
 const { days } = storeToRefs(useSettingsStore());
+const { isAuthenticated, updateEvents } = useGoogleCalendar();
+
+const onHide = () => {
+  if (isAuthenticated.value) {
+    updateEvents();
+  }
+};
 
 const format = 'yyyy/MM/dd';
 const model = computed({
