@@ -1,11 +1,12 @@
 <template>
-  <q-dialog v-model="isDateSettingsOpen">
+  <q-popup-proxy anchor="bottom middle" self="top middle">
     <q-date
+      color="blue-10"
       range
       multiple
       v-model="model"
       subtitle="Working days"/>
-  </q-dialog>
+  </q-popup-proxy>
 </template>
 
 <script setup lang="ts">
@@ -14,7 +15,7 @@ import { storeToRefs } from 'pinia';
 import { useSettingsStore } from 'src/stores/settings-store';
 import { computed } from 'vue';
 
-const { isDateSettingsOpen, days } = storeToRefs(useSettingsStore());
+const { days } = storeToRefs(useSettingsStore());
 
 const format = 'yyyy/MM/dd';
 const model = computed({

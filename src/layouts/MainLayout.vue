@@ -17,8 +17,9 @@
           <q-tooltip anchor="bottom middle" self="top middle" class="text-body2 bg-dark">
             Working days
           </q-tooltip>
+
+          <DateSettings/>
         </q-btn>
-        <DateSettings/>
 
         <q-btn
           flat
@@ -49,11 +50,8 @@
 </template>
 
 <script setup lang="ts">
-import { storeToRefs } from 'pinia';
 import DateSettings from 'src/components/DateSettings.vue';
 import { useGoogleCalendar } from 'src/composables/useGoogleCalendar';
-import { useSettingsStore } from 'src/stores/settings-store';
 
 const { updateEvents, isLoading, isAuthenticated } = useGoogleCalendar();
-const { isDateSettingsOpen } = storeToRefs(useSettingsStore());
 </script>
