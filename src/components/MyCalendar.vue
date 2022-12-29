@@ -29,11 +29,11 @@ const calendarOptions = computed<CalendarOptions>(() => ({
     end: maxDate.value.endOf('week').toFormat('yyyy-MM-dd'), // sunday exclusive
   },
   businessHours: [{
-    daysOfWeek: [1, 2, 3, 4, 5],
+    daysOfWeek: [0, 1, 2, 3, 4, 5, 6],
     startTime: '11:00',
     endTime: '13:00',
   }, {
-    daysOfWeek: [1, 2, 3, 4, 5],
+    daysOfWeek: [0, 1, 2, 3, 4, 5, 6],
     startTime: '14:00',
     endTime: '18:00',
   }],

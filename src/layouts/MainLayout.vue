@@ -45,11 +45,14 @@
     <q-page-container>
       <router-view />
     </q-page-container>
+
+    <ExportText/>
   </q-layout>
 </template>
 
 <script setup lang="ts">
 import DateSettings from 'src/components/DateSettings.vue';
+import ExportText from 'src/components/ExportText.vue';
 import { useGoogleCalendar } from 'src/composables/useGoogleCalendar';
 
 const { updateEvents, isLoading, isAuthenticated } = useGoogleCalendar();

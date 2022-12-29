@@ -1,5 +1,5 @@
 <template>
-  <q-popup-proxy anchor="bottom middle" self="top middle" @hide="onHide">
+  <q-popup-proxy anchor="bottom right" self="top right" :offset="[0, 4]" @hide="onHide">
     <q-date
       color="blue-10"
       range
