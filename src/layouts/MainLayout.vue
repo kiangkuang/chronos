@@ -11,15 +11,28 @@
         <q-btn
           flat
           round
-          :icon="isAuthenticated ? 'sync': 'login'"
+          icon="date_range"
+          @click="isDateSettingsOpen=true"
+        >
+          <q-tooltip anchor="bottom middle" self="top middle" class="text-body2 bg-dark">
+            Working days
+          </q-tooltip>
+        </q-btn>
+        <DateSettings/>
+
+        <q-btn
+          flat
+          round
+          icon="cloud_sync"
           :loading="isLoading"
           @click="updateEvents"
         >
+          <q-tooltip anchor="bottom middle" self="top middle" class="text-body2 bg-dark">
+            {{ isAuthenticated ? "Re-sync calendar" : "Sign in with Google" }}
+          </q-tooltip>
+
           <template v-slot:loading>
             <q-spinner/>
-            <q-tooltip v-if="!isAuthenticated" anchor="center left" self="center right" class="text-body2 bg-dark">
-              Sign in with Google!
-            </q-tooltip>
           </template>
         </q-btn>
         <q-spinner-radio
@@ -36,7 +49,11 @@
 </template>
 
 <script setup lang="ts">
+import { storeToRefs } from 'pinia';
+import DateSettings from 'src/components/DateSettings.vue';
 import { useGoogleCalendar } from 'src/composables/useGoogleCalendar';
+import { useSettingsStore } from 'src/stores/settings-store';
 
 const { updateEvents, isLoading, isAuthenticated } = useGoogleCalendar();
+const { isDateSettingsOpen } = storeToRefs(useSettingsStore());
 </script>

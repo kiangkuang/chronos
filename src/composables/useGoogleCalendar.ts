@@ -1,5 +1,8 @@
 import { refAutoReset, until, useScriptTag } from '@vueuse/core';
+import { maxBy, minBy } from 'lodash';
 import { DateTime } from 'luxon';
+import { storeToRefs } from 'pinia';
+import { useSettingsStore } from 'src/stores/settings-store';
 import { ref } from 'vue';
 import { IEvent } from '../interfaces/event';
 
@@ -54,12 +57,13 @@ const checkToken = async (callback: () => Promise<void>) => {
     await callbackFn();
   }
 };
+const { minDate, maxDate } = storeToRefs(useSettingsStore());
 
 const getEvents = async () => {
   const response = await window.gapi.client.calendar.events.list({
     calendarId: 'primary',
-    timeMin: DateTime.now().startOf('week').toISO(),
-    timeMax: DateTime.now().startOf('week').plus({ weeks: 2 }).toISO(),
+    timeMin: minDate.value.toISO(),
+    timeMax: maxDate.value.endOf('day').toISO(),
     showDeleted: false,
     singleEvents: true,
   });

@@ -9,6 +9,7 @@ specifiers:
   '@types/gapi': ^0.0.43
   '@types/gapi.calendar': ^3.0.6
   '@types/google.accounts': ^0.0.4
+  '@types/lodash': ^4.14.191
   '@types/luxon': ^3.1.0
   '@types/node': ^12.20.21
   '@typescript-eslint/eslint-plugin': ^5.10.0
@@ -20,6 +21,7 @@ specifiers:
   eslint-config-airbnb-base: ^15.0.0
   eslint-plugin-import: ^2.20.1
   eslint-plugin-vue: ^9.0.0
+  lodash: ^4.17.21
   luxon: ^3.1.1
   pinia: ^2.0.11
   quasar: ^2.6.0
@@ -33,6 +35,7 @@ dependencies:
   '@fullcalendar/vue3': 5.11.3_vue@3.2.45
   '@quasar/extras': 1.15.6
   '@vueuse/core': 9.7.0_vue@3.2.45
+  lodash: 4.17.21
   luxon: 3.1.1
   pinia: 2.0.26_mgnvym7yiazkylwwogi5r767ue
   quasar: 2.10.2
@@ -44,6 +47,7 @@ devDependencies:
   '@types/gapi': 0.0.43
   '@types/gapi.calendar': 3.0.6
   '@types/google.accounts': 0.0.4
+  '@types/lodash': 4.14.191
   '@types/luxon': 3.1.0
   '@types/node': 12.20.55
   '@typescript-eslint/eslint-plugin': 5.44.0_fnsv2sbzcckq65bwfk7a5xwslu
@@ -369,6 +373,10 @@ packages:
 
   /@types/json5/0.0.29:
     resolution: {integrity: sha512-dRLjCWHYg4oaA77cxO64oO+7JwCwnIzkZPdrrC71jQmQtlhM556pwKo5bUzqvZndkVbeFLIIi+9TC40JNF5hNQ==}
+    dev: true
+
+  /@types/lodash/4.14.191:
+    resolution: {integrity: sha512-BdZ5BCCvho3EIXw6wUCXHe7rS53AIDPLE+JzwgT+OsJk53oBfbSmZZ7CX4VaRoN78N+TJpFi9QPlfIVNmJYWxQ==}
     dev: true
 
   /@types/luxon/3.1.0:
@@ -2448,7 +2456,6 @@ packages:
 
   /lodash/4.17.21:
     resolution: {integrity: sha512-v2kDEe57lecTulaDIuNTPy3Ry4gLGJ6Z1O3vE1krgXZNrsQ+LFTGHVxVjcXPs17LhbZVGedAJv8XZ1tvj5FvSg==}
-    dev: true
 
   /log-symbols/4.1.0:
     resolution: {integrity: sha512-8XPvpAA8uyhfteu8pIvQxpJZ7SYYdpUivZpGy6sFsBuKRY/7rQGavedeB8aK+Zkyq6upMFVL/9AW6vOYzfRyLg==}
