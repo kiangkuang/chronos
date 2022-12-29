@@ -1,5 +1,7 @@
 import { EventApi, EventInput } from '@fullcalendar/core';
 import { DateTime, Interval } from 'luxon';
+import { storeToRefs } from 'pinia';
+import { useSettingsStore } from 'src/stores/settings-store';
 import { ref, computed } from 'vue';
 import { useGoogleCalendar } from './useGoogleCalendar';
 
@@ -18,27 +20,24 @@ const events = computed(() => _events.value.map<EventInput>((event) => {
   };
 }));
 
-const days = [0, 1, 2, 3, 4, 7, 8, 9, 10, 11];
+const { days } = storeToRefs(useSettingsStore());
 
-const fullDayIntervals = days.map((day) => Interval.fromDateTimes(
-  DateTime.now().startOf('week').plus({ day, hours: 0 }),
-  DateTime.now().startOf('week').plus({ day, hours: 24 }),
-));
+const fullDayIntervals = computed(() => days.value.flatMap((day) => Interval.fromDateTimes(day.from, day.to).splitBy({ days: 1 })));
 
-const beforeWorkIntervals = days.map((day) => Interval.fromDateTimes(
-  DateTime.now().startOf('week').plus({ day, hours: 0 }),
-  DateTime.now().startOf('week').plus({ day, hours: 11 }),
-));
+const beforeWorkIntervals = computed(() => fullDayIntervals.value.map((day) => Interval.fromDateTimes(
+  day.start.plus({ hours: 0 }),
+  day.start.plus({ hours: 11 }),
+)));
 
-const lunchIntervals = days.map((day) => Interval.fromDateTimes(
-  DateTime.now().startOf('week').plus({ day, hours: 13 }),
-  DateTime.now().startOf('week').plus({ day, hours: 14 }),
-));
+const lunchIntervals = computed(() => fullDayIntervals.value.map((day) => Interval.fromDateTimes(
+  day.start.plus({ hours: 13 }),
+  day.start.plus({ hours: 14 }),
+)));
 
-const afterWorkIntervals = days.map((day) => Interval.fromDateTimes(
-  DateTime.now().startOf('week').plus({ day, hours: 18 }),
-  DateTime.now().startOf('week').plus({ day, hours: 24 }),
-));
+const afterWorkIntervals = computed(() => fullDayIntervals.value.map((day) => Interval.fromDateTimes(
+  day.start.plus({ hours: 18 }),
+  day.start.plus({ hours: 24 }),
+)));
 
 const workHours = computed(() => {
   const eventIntervals = selectedEvents.value.map((event) => Interval.fromDateTimes(
@@ -46,22 +45,21 @@ const workHours = computed(() => {
     DateTime.fromISO(event.end?.toISOString() ?? ''),
   ));
 
-  const free = Interval.xor([
-    ...fullDayIntervals,
-    ...beforeWorkIntervals,
-    ...lunchIntervals,
-    ...afterWorkIntervals,
+  return Interval.xor([
+    ...fullDayIntervals.value,
+    ...beforeWorkIntervals.value,
+    ...lunchIntervals.value,
+    ...afterWorkIntervals.value,
     ...eventIntervals,
-  ]);
-  return free.reduce((acc, curr) => acc + curr.toDuration('hours').hours, 0);
+  ]).reduce((acc, curr) => acc + curr.toDuration('hours').hours, 0);
 });
 
-const totalHours = Interval.xor([
-  ...fullDayIntervals,
-  ...beforeWorkIntervals,
-  ...lunchIntervals,
-  ...afterWorkIntervals,
-]).reduce((acc, curr) => acc + curr.toDuration('hours').hours, 0);
+const totalHours = computed(() => Interval.xor([
+  ...fullDayIntervals.value,
+  ...beforeWorkIntervals.value,
+  ...lunchIntervals.value,
+  ...afterWorkIntervals.value,
+]).reduce((acc, curr) => acc + curr.toDuration('hours').hours, 0));
 
 const toggleSelectedEvent = (event :EventApi) => {
   selectedEvents.value = selectedEvents.value.some((x) => x.id === event.id)

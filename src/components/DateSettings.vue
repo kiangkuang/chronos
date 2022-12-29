@@ -20,14 +20,14 @@ const format = 'yyyy/MM/dd';
 const model = computed({
   get() {
     return days.value.map((x) => ({
-      from: x.from.toFormat(format),
-      to: x.to.toFormat(format),
+      from: x.from.toFormat(format), // inclusive
+      to: x.to.minus({ days: 1 }).toFormat(format), // inclusive
     }));
   },
   set(newValue) {
     days.value = newValue?.map((x) => ({
-      from: DateTime.fromFormat(x.from, format),
-      to: DateTime.fromFormat(x.to, format).endOf('day'),
+      from: DateTime.fromFormat(x.from, format), // inclusive
+      to: DateTime.fromFormat(x.to, format).plus({ days: 1 }), // exclusive
     })) ?? [];
   },
 });
