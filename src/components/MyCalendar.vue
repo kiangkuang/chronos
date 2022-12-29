@@ -19,7 +19,7 @@ const { minDate, maxDate } = storeToRefs(useSettingsStore());
 const calendarOptions = computed<CalendarOptions>(() => ({
   plugins: [timeGridPlugin],
   initialView: 'timeGridWeek',
-  height: 'calc(100vh - 50px - 16px - 16px)',
+  height: 'calc(100vh - 50px - 35px - 16px - 16px)',
   eventShortHeight: 40,
   events: events.value,
   slotEventOverlap: false,
