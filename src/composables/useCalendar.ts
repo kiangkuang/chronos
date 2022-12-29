@@ -8,17 +8,12 @@ import { useGoogleCalendar } from './useGoogleCalendar';
 const selectedEvents = ref<EventApi[]>([]);
 
 const { events: _events } = useGoogleCalendar();
-const events = computed(() => _events.value.map<EventInput>((event) => {
-  const isSelected = selectedEvents.value.some((x) => x.id === event.id);
-  return {
-    id: event.id,
-    start: event.start.dateTime ?? event.start.date,
-    end: event.end.dateTime ?? event.end.date,
-    title: event.summary,
-    backgroundColor: isSelected ? '#3788d8' : 'white',
-    textColor: isSelected ? 'white' : '#3788d8',
-  };
-}));
+const events = computed(() => _events.value.map<EventInput>((event) => ({
+  id: event.id,
+  start: event.start.dateTime ?? event.start.date,
+  end: event.end.dateTime ?? event.end.date,
+  title: event.summary,
+})));
 
 const { days } = storeToRefs(useSettingsStore());
 
@@ -69,6 +64,7 @@ const toggleSelectedEvent = (event :EventApi) => {
 
 export const useCalendar = () => ({
   events,
+  selectedEvents,
   toggleSelectedEvent,
   workHours,
   totalHours,

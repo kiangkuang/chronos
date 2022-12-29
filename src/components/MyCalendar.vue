@@ -12,7 +12,7 @@ import { computed } from 'vue';
 import { useSettingsStore } from 'src/stores/settings-store';
 import { storeToRefs } from 'pinia';
 
-const { events, toggleSelectedEvent } = useCalendar();
+const { events, selectedEvents, toggleSelectedEvent } = useCalendar();
 
 const { minDate, maxDate } = storeToRefs(useSettingsStore());
 
@@ -37,9 +37,16 @@ const calendarOptions = computed<CalendarOptions>(() => ({
     startTime: '14:00',
     endTime: '18:00',
   }],
+  eventBackgroundColor: 'white',
+  eventTextColor: '#3788d8',
   eventClick: ({ el, event }) => {
     el.blur();
     toggleSelectedEvent(event);
+
+    const isSelected = selectedEvents.value.some((x) => x.id === event.id);
+
+    event.setProp('backgroundColor', isSelected ? '#3788d8' : 'white');
+    event.setProp('textColor', isSelected ? 'white' : '#3788d8');
   },
 }));
 </script>
