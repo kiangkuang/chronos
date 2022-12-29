@@ -35,10 +35,6 @@
             <q-spinner/>
           </template>
         </q-btn>
-        <q-spinner-radio
-          color="primary"
-          size="2em"
-        />
       </q-toolbar>
     </q-header>
 
