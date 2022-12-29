@@ -12,7 +12,6 @@
           flat
           round
           icon="date_range"
-          @click="isDateSettingsOpen=true"
         >
           <q-tooltip anchor="bottom middle" self="top middle" class="text-body2 bg-dark">
             Working days
