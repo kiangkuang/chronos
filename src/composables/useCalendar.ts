@@ -2,7 +2,7 @@ import { EventApi, EventInput } from '@fullcalendar/core';
 import { DateTime, Interval } from 'luxon';
 import { storeToRefs } from 'pinia';
 import { useSettingsStore } from 'src/stores/settings-store';
-import { ref, computed } from 'vue';
+import { ref, computed, watch } from 'vue';
 import { useGoogleCalendar } from './useGoogleCalendar';
 
 const selectedEvents = ref<EventApi[]>([]);
@@ -14,6 +14,10 @@ const events = computed(() => _events.value.map<EventInput>((event) => ({
   end: event.end.dateTime ?? event.end.date,
   title: event.summary,
 })));
+
+watch(events, () => {
+  selectedEvents.value = [];
+});
 
 const { days } = storeToRefs(useSettingsStore());
 
