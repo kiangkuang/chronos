@@ -9,7 +9,7 @@
     "dev": "quasar dev",
     "build": "quasar build",
     "build:pwa": "quasar build -m pwa",
-    "lint": "eslint --ext .js,.ts,.vue ./",
+    "lint": "eslint --fix --ext .js,.ts,.vue ./",
     "test": "echo \"No test specified\" && exit 0"
   },
   "dependencies": {

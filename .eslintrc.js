@@ -64,7 +64,6 @@ module.exports = {
 
   // add your custom rules here
   rules: {
-
     'no-param-reassign': 'off',
     'no-void': 'off',
     'no-nested-ternary': 'off',
@@ -85,7 +84,7 @@ module.exports = {
 
     'prefer-promise-reject-errors': 'off',
 
-    quotes: ['warn', 'single', { avoidEscape: true }],
+    'quotes': ['warn', 'single', { avoidEscape: true }],
 
     // this rule, if on, would require explicit return type on the `render` function
     '@typescript-eslint/explicit-function-return-type': 'off',
@@ -99,6 +98,9 @@ module.exports = {
 
     // allow debugger during development only
     'no-debugger': process.env.NODE_ENV === 'production' ? 'error' : 'off',
-    'max-len': 'off'
+    'max-len': 'off',
+
+    'indent': 'off',
+    '@typescript-eslint/indent': ['error', 2]
   }
 }
