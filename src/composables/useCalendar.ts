@@ -7,26 +7,15 @@ import { useGoogleCalendar } from './useGoogleCalendar';
 
 const selectedEvents = ref<EventApi[]>([]);
 
-const { events: _events } = useGoogleCalendar();
-const events = computed(() => _events.value.map<EventInput>((event) => ({
-  id: event.id,
-  start: event.start.dateTime ?? event.start.date,
-  end: event.end.dateTime ?? event.end.date,
-  title: event.summary,
-})));
-
-watch(events, () => {
-  selectedEvents.value = [];
-});
-
 const { days } = storeToRefs(useSettingsStore());
 
-const totalWorkIntervals = computed(() => days.value
-  .flatMap((day) => Interval.fromDateTimes(day.from, day.to).splitBy({ days: 1 }))
-  .flatMap((day) => [
-    Interval.fromDateTimes(day.start.plus({ hours: 11 }), day.start.plus({ hours: 13 })),
-    Interval.fromDateTimes(day.start.plus({ hours: 14 }), day.start.plus({ hours: 18 })),
-  ]));
+const workDaysInterval = computed(() => days.value
+  .flatMap((day) => Interval.fromDateTimes(day.from, day.to).splitBy({ days: 1 })));
+
+const totalWorkIntervals = computed(() => workDaysInterval.value.flatMap((day) => [
+  Interval.fromDateTimes(day.start.plus({ hours: 11 }), day.start.plus({ hours: 13 })),
+  Interval.fromDateTimes(day.start.plus({ hours: 14 }), day.start.plus({ hours: 18 })),
+]));
 
 const eventIntervals = computed(() => selectedEvents.value.map((event) => Interval.fromDateTimes(
   DateTime.fromISO(event.start?.toISOString() ?? ''),
@@ -45,6 +34,34 @@ const toggleSelectedEvent = (event :EventApi) => {
     ? selectedEvents.value.filter((x) => x.id !== event.id)
     : [...selectedEvents.value, event];
 };
+
+const { events: _events } = useGoogleCalendar();
+const events = computed(() => [
+  ..._events.value.map<EventInput>((event) => ({
+    id: event.id,
+    start: event.start.dateTime ?? event.start.date,
+    end: event.end.dateTime ?? event.end.date,
+    title: event.summary,
+  })),
+  ...workDaysInterval.value.flatMap((x) => [
+    {
+      id: `${x.toString()}-Support`,
+      start: x.start.toISODate(),
+      end: x.end.toISODate(),
+      title: 'Support',
+    },
+    {
+      id: `${x.toString()}-Leave`,
+      start: x.start.toISODate(),
+      end: x.end.toISODate(),
+      title: 'Leave',
+    },
+  ]),
+]);
+
+watch(events, () => {
+  selectedEvents.value = [];
+});
 
 export const useCalendar = () => ({
   events,
