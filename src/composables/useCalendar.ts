@@ -45,13 +45,13 @@ const events = computed(() => [
   })),
   ...workDaysInterval.value.flatMap((x) => [
     {
-      id: `${x.toString()}-Support`,
+      id: crypto.randomUUID(),
       start: x.start.toISODate(),
       end: x.end.toISODate(),
       title: 'Support',
     },
     {
-      id: `${x.toString()}-Leave`,
+      id: crypto.randomUUID(),
       start: x.start.toISODate(),
       end: x.end.toISODate(),
       title: 'Leave',
