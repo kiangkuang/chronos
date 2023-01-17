@@ -2,6 +2,7 @@ lockfileVersion: 5.4
 
 specifiers:
   '@fullcalendar/core': ^5.11.3
+  '@fullcalendar/interaction': ^5.11.3
   '@fullcalendar/timegrid': ^5.11.3
   '@fullcalendar/vue3': ^5.11.3
   '@quasar/app-vite': ^1.0.0
@@ -31,6 +32,7 @@ specifiers:
 
 dependencies:
   '@fullcalendar/core': 5.11.3
+  '@fullcalendar/interaction': 5.11.3
   '@fullcalendar/timegrid': 5.11.3
   '@fullcalendar/vue3': 5.11.3_vue@3.2.45
   '@quasar/extras': 1.15.6
@@ -118,6 +120,13 @@ packages:
 
   /@fullcalendar/daygrid/5.11.3:
     resolution: {integrity: sha512-PCK0y80DRNCzWuC5lGpIWqCgKDvql1ah7rXql5lu+Gn2EeFj15ZQ8diMFjtNIQucEmFaNOXnR05Pgcry1n6Shg==}
+    dependencies:
+      '@fullcalendar/common': 5.11.3
+      tslib: 2.4.1
+    dev: false
+
+  /@fullcalendar/interaction/5.11.3:
+    resolution: {integrity: sha512-L955wkDjza62K96ndstvYs2Fd4V0kayTDpqW8W7huFG3Ox8MutpLqKAa2SCaTvcNIlWS4oexGQRiQAaJG7u47A==}
     dependencies:
       '@fullcalendar/common': 5.11.3
       tslib: 2.4.1

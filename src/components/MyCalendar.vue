@@ -5,6 +5,7 @@
 <script setup lang="ts">
 import '@fullcalendar/core/vdom';
 import FullCalendar from '@fullcalendar/vue3';
+import interactionPlugin from '@fullcalendar/interaction';
 import timeGridPlugin from '@fullcalendar/timegrid';
 import { CalendarOptions } from '@fullcalendar/core';
 import { useCalendar } from 'src/composables/useCalendar';
@@ -17,7 +18,7 @@ const { events, selectedEvents, toggleSelectedEvent } = useCalendar();
 const { minDate, maxDate } = storeToRefs(useSettingsStore());
 
 const calendarOptions = computed<CalendarOptions>(() => ({
-  plugins: [timeGridPlugin],
+  plugins: [timeGridPlugin, interactionPlugin],
   initialView: 'timeGridWeek',
   height: 'calc(100vh - 50px - 35px - 16px - 16px)',
   eventShortHeight: 40,
@@ -47,6 +48,15 @@ const calendarOptions = computed<CalendarOptions>(() => ({
 
     event.setProp('backgroundColor', isSelected ? '#3788d8' : 'white');
     event.setProp('textColor', isSelected ? 'white' : '#3788d8');
+  },
+  editable: true,
+  eventDrop: (e) => {
+    toggleSelectedEvent(e.event);
+    toggleSelectedEvent(e.event);
+  },
+  eventResize: (e) => {
+    toggleSelectedEvent(e.event);
+    toggleSelectedEvent(e.event);
   },
 }));
 </script>
