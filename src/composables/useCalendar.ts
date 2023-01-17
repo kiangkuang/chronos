@@ -21,44 +21,24 @@ watch(events, () => {
 
 const { days } = storeToRefs(useSettingsStore());
 
-const fullDayIntervals = computed(() => days.value.flatMap((day) => Interval.fromDateTimes(day.from, day.to).splitBy({ days: 1 })));
+const totalWorkIntervals = computed(() => days.value
+  .flatMap((day) => Interval.fromDateTimes(day.from, day.to).splitBy({ days: 1 }))
+  .flatMap((day) => [
+    Interval.fromDateTimes(day.start.plus({ hours: 11 }), day.start.plus({ hours: 13 })),
+    Interval.fromDateTimes(day.start.plus({ hours: 14 }), day.start.plus({ hours: 18 })),
+  ]));
 
-const beforeWorkIntervals = computed(() => fullDayIntervals.value.map((day) => Interval.fromDateTimes(
-  day.start.plus({ hours: 0 }),
-  day.start.plus({ hours: 11 }),
+const eventIntervals = computed(() => selectedEvents.value.map((event) => Interval.fromDateTimes(
+  DateTime.fromISO(event.start?.toISOString() ?? ''),
+  DateTime.fromISO(event.end?.toISOString() ?? ''),
 )));
 
-const lunchIntervals = computed(() => fullDayIntervals.value.map((day) => Interval.fromDateTimes(
-  day.start.plus({ hours: 13 }),
-  day.start.plus({ hours: 14 }),
-)));
+const workIntervals = computed(() => eventIntervals.value.reduce((acc, curr) => acc
+  .flatMap((x) => x.difference(curr)), totalWorkIntervals.value));
 
-const afterWorkIntervals = computed(() => fullDayIntervals.value.map((day) => Interval.fromDateTimes(
-  day.start.plus({ hours: 18 }),
-  day.start.plus({ hours: 24 }),
-)));
+const workHours = computed(() => workIntervals.value.reduce((acc, curr) => acc + curr.toDuration('hours').hours, 0));
 
-const workHours = computed(() => {
-  const eventIntervals = selectedEvents.value.map((event) => Interval.fromDateTimes(
-    DateTime.fromISO(event.start?.toISOString() ?? ''),
-    DateTime.fromISO(event.end?.toISOString() ?? ''),
-  ));
-
-  return Interval.xor([
-    ...fullDayIntervals.value,
-    ...beforeWorkIntervals.value,
-    ...lunchIntervals.value,
-    ...afterWorkIntervals.value,
-    ...eventIntervals,
-  ]).reduce((acc, curr) => acc + curr.toDuration('hours').hours, 0);
-});
-
-const totalHours = computed(() => Interval.xor([
-  ...fullDayIntervals.value,
-  ...beforeWorkIntervals.value,
-  ...lunchIntervals.value,
-  ...afterWorkIntervals.value,
-]).reduce((acc, curr) => acc + curr.toDuration('hours').hours, 0));
+const totalHours = computed(() => totalWorkIntervals.value.reduce((acc, curr) => acc + curr.toDuration('hours').hours, 0));
 
 const toggleSelectedEvent = (event :EventApi) => {
   selectedEvents.value = selectedEvents.value.some((x) => x.id === event.id)
