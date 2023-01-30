@@ -42,22 +42,40 @@ const { selectedEvents, workHours, totalHours } = useCalendar();
 
 const model = ref('');
 
+const createElement = (tagName: string, ...children: (Node | string)[]) => {
+  const result = document.createElement(tagName);
+  children.forEach((child) => {
+    result.append(child);
+  });
+  return result;
+};
+
 const beforeShow = () => {
   const sorted = sortBy(selectedEvents.value, (x) => x.startStr);
   const groupedEvents = groupBy(sorted, (x) => DateTime.fromISO(x.startStr).toFormat('MM/dd EEE'));
-  model.value = `Hours: <b>${workHours.value}</b> / ${totalHours.value}
-  <ul>
-    ${Object.keys(groupedEvents).map((key) => `
-    <li>
-      ${key}
-      <ul>
-        ${groupedEvents[key].map((e) => `
-        <li>
-          [${Interval.fromDateTimes(DateTime.fromISO(e.startStr), DateTime.fromISO(e.endStr)).toDuration('hours').hours}] ${e.title}
-        </li>`).join('')}
-      </ul>
-    </li>`).join('')}
-  </ul>`;
+
+  model.value = createElement(
+    'p',
+    createElement(
+      'p',
+      'Hours: ',
+      createElement('b', workHours.value.toString()),
+      ` / ${totalHours.value.toString()}`,
+    ),
+    createElement('ul', ...Object.keys(groupedEvents).map((key) => createElement(
+      'li',
+      key,
+      createElement('ul', ...groupedEvents[key].map((event) => {
+        const start = DateTime.fromISO(event.startStr);
+        const end = DateTime.fromISO(event.endStr);
+        const duration = Interval.fromDateTimes(start, end).toDuration('hours').hours;
+        return createElement(
+          'li',
+          `[${duration}] ${event.title}`,
+        );
+      })),
+    ))),
+  ).innerHTML;
 };
 
 const copyAll = () => {
