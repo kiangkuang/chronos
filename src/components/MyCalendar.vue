@@ -67,14 +67,12 @@ const calendarOptions = computed<CalendarOptions>(() => ({
     // eslint-disable-next-line no-alert
     const title = prompt('Add event', 'Name');
     if (title) {
-      const start = DateTime.fromJSDate(e.start);
-      const end = DateTime.fromJSDate(e.end);
       fullCalendar.value?.getApi().addEvent({
         id: crypto.randomUUID(),
-        start: start.toISO(),
-        end: end.toISO(),
+        start: DateTime.fromJSDate(e.start).toISO(),
+        end: DateTime.fromJSDate(e.end).toISO(),
+        allDay: e.allDay,
         title,
-        allDay: start.startOf('day').equals(start) && end.startOf('day').equals(end),
       });
     }
     fullCalendar.value?.getApi().unselect();
