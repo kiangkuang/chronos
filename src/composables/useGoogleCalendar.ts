@@ -2,6 +2,7 @@ import { refAutoReset, until, useScriptTag } from '@vueuse/core';
 import { storeToRefs } from 'pinia';
 import { useSettingsStore } from 'src/stores/settings-store';
 import { ref } from 'vue';
+import { Notify } from 'quasar';
 import { IEvent } from '../interfaces/event';
 
 const CLIENT_ID = process.env.GOOGLE_API_CLIENT_ID || '';
@@ -31,8 +32,20 @@ useScriptTag('https://accounts.google.com/gsi/client', () => {
 
 const checkToken = async (callback: () => Promise<void>) => {
   isLoading.value = true;
-  await until(gsiLoaded).toBeTruthy();
-  await until(gapiLoaded).toBeTruthy();
+  try {
+    await until(gsiLoaded).toBeTruthy({ timeout: 3000, throwOnTimeout: true });
+    await until(gapiLoaded).toBeTruthy({ timeout: 3000, throwOnTimeout: true });
+  } catch {
+    Notify.create({
+      icon: 'error',
+      message: 'Google script loading timeout!',
+      caption: 'Try disabling your ad blocker',
+      color: 'negative',
+      position: 'top-right',
+      progress: true,
+    });
+    isLoading.value = false;
+  }
 
   const callbackFn = async () => {
     isAuthenticated.value = true;
@@ -58,15 +71,26 @@ const checkToken = async (callback: () => Promise<void>) => {
 const { minDate, maxDate } = storeToRefs(useSettingsStore());
 
 const getEvents = async () => {
-  const response = await window.gapi.client.calendar.events.list({
-    calendarId: 'primary',
-    timeMin: minDate.value.toISO(),
-    timeMax: maxDate.value.toISO(),
-    showDeleted: false,
-    singleEvents: true,
-  });
+  try {
+    const response = await window.gapi.client.calendar.events.list({
+      calendarId: 'primary',
+      timeMin: minDate.value.toISO(),
+      timeMax: maxDate.value.toISO(),
+      showDeleted: false,
+      singleEvents: true,
+    });
 
-  events.value = response.result.items;
+    events.value = response.result.items;
+  } catch {
+    Notify.create({
+      icon: 'error',
+      message: 'Google API error!',
+      caption: 'Try again later',
+      color: 'negative',
+      position: 'top-right',
+      progress: true,
+    });
+  }
 };
 
 const updateEvents = () => {
