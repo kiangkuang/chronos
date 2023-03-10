@@ -14,8 +14,11 @@ import { useSettingsStore } from 'src/stores/settings-store';
 import { storeToRefs } from 'pinia';
 import { DateTime } from 'luxon';
 import { FullCalendarRef } from 'src/interfaces/calendar';
+import { useColors } from 'src/composables/useColors';
 
 const { events, selectedEvents, toggleSelectedEvent } = useCalendar();
+const { colorNameMap } = useColors();
+const defaultColor = colorNameMap.get('Curious Blue');
 
 const {
   minDate, maxDate,
@@ -50,16 +53,21 @@ const calendarOptions = computed<CalendarOptions>(() => ({
     startTime: afternoonBeginTime.value,
     endTime: afternoonEndTime.value,
   }],
+  eventAdd: ({ event }) => {
+    event.setProp('borderColor', defaultColor);
+    event.setProp('textColor', defaultColor);
+  },
   eventBackgroundColor: 'white',
-  eventTextColor: '#3788d8',
+  eventTextColor: defaultColor,
   eventClick: ({ el, event }) => {
     el.blur();
     toggleSelectedEvent(event);
 
     const isSelected = selectedEvents.value.some((x) => x.id === event.id);
+    const eventColor = event.borderColor;
 
-    event.setProp('backgroundColor', isSelected ? '#3788d8' : 'white');
-    event.setProp('textColor', isSelected ? 'white' : '#3788d8');
+    event.setProp('backgroundColor', isSelected ? eventColor : 'white');
+    event.setProp('textColor', isSelected ? 'white' : eventColor);
   },
   editable: true,
   eventDrop: (e) => {
