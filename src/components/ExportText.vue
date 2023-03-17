@@ -45,7 +45,7 @@ import { useGoogleSheets } from 'src/composables/useGoogleSheets';
 
 const editor = ref<QEditor>();
 
-const { selectedEvents, workHours, totalHours } = useCalendar();
+const { selectedEvents, devHours, workHours } = useCalendar();
 const { sendData } = useGoogleSheets();
 
 const model = ref('');
@@ -67,8 +67,8 @@ const beforeShow = () => {
     createElement(
       'p',
       'Hours: ',
-      createElement('b', workHours.value.toString()),
-      ` / ${totalHours.value.toString()}`,
+      createElement('b', devHours.value.toString()),
+      ` / ${workHours.value.toString()}`,
     ),
     createElement('ul', ...Object.keys(groupedEvents).map((key) => createElement(
       'li',
