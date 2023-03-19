@@ -71,6 +71,13 @@ const devWithoutImprovingHours = computed(() => intervalsToHours(devTimewithoutI
 const focusDevWithoutImprovingHours = computed(() => devTimewithoutImprovingIntervals.value.reduce((acc, curr) => (acc + filterOutBrokenTime(curr.toDuration('hours').hours)), 0));
 const brokenDevWithoutImprovingHours = computed(() => devWithoutImprovingHours.value - focusDevWithoutImprovingHours.value);
 
+const countPercent = (hours: number) => (Math.round((100 * hours) / workHours.value));
+const leavePercent = computed(() => countPercent(leaveHours.value));
+const meetingPercent = computed(() => countPercent(meetingHours.value));
+const supportPercent = computed(() => countPercent(supportHours.value));
+const improvingPercent = computed(() => countPercent(improvingHours.value));
+const devPercent = computed(() => countPercent(devHours.value));
+
 export const useTimeCalculator = () => ({
   workHours,
   leaveHours,
@@ -83,4 +90,9 @@ export const useTimeCalculator = () => ({
   devWithoutImprovingHours,
   focusDevWithoutImprovingHours,
   brokenDevWithoutImprovingHours,
+  leavePercent,
+  supportPercent,
+  meetingPercent,
+  improvingPercent,
+  devPercent,
 });
