@@ -18,9 +18,15 @@
               icon: 'copy_all',
               label: 'Copy All',
               handler: copyAll
+            },
+            send: {
+              tip: 'Send to sheets',
+              icon: 'send',
+              label: 'send',
+              handler: sendToGoogleSheet
             }
           }"
-          :toolbar="[['undo', 'redo'], ['bold', 'italic', 'strike', 'underline', 'link'], ['unordered', 'ordered', 'outdent', 'indent'], ['copy']]"
+          :toolbar="[['undo', 'redo'], ['bold', 'italic', 'strike', 'underline', 'link'], ['unordered', 'ordered', 'outdent', 'indent'], ['copy', 'send']]"
         />
       </q-popup-proxy>
     </q-btn>
@@ -28,17 +34,21 @@
 </template>
 
 <script lang="ts" setup>
+import { ref } from 'vue';
 import { groupBy, sortBy } from 'lodash';
 import { DateTime, Interval } from 'luxon';
 import {
   QPageSticky, QBtn, QPopupProxy, QEditor,
 } from 'quasar';
 import { useCalendar } from 'src/composables/useCalendar';
-import { ref } from 'vue';
+import { useGoogleSheets } from 'src/composables/useGoogleSheets';
+import { useTimeCalculator } from 'src/composables/useTimeCalculator';
 
 const editor = ref<QEditor>();
 
-const { selectedEvents, workHours, totalHours } = useCalendar();
+const { selectedEvents } = useCalendar();
+const { devHours, workHours } = useTimeCalculator();
+const { sendData } = useGoogleSheets();
 
 const model = ref('');
 
@@ -59,8 +69,8 @@ const beforeShow = () => {
     createElement(
       'p',
       'Hours: ',
-      createElement('b', workHours.value.toString()),
-      ` / ${totalHours.value.toString()}`,
+      createElement('b', devHours.value.toString()),
+      ` / ${workHours.value.toString()}`,
     ),
     createElement('ul', ...Object.keys(groupedEvents).map((key) => createElement(
       'li',
@@ -82,4 +92,8 @@ const copyAll = () => {
   editor.value?.runCmd('selectAll');
   editor.value?.runCmd('copy');
 };
+const sendToGoogleSheet = () => {
+  sendData();
+};
+
 </script>
