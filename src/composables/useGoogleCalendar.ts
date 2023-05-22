@@ -80,7 +80,7 @@ const getEvents = async () => {
       singleEvents: true,
     });
 
-    events.value = response.result.items;
+    events.value = response.result.items.filter((event) => event.attendees?.find((attendee) => attendee.self && attendee.responseStatus !== 'declined'));
   } catch {
     Notify.create({
       icon: 'error',
