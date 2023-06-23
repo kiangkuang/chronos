@@ -22,81 +22,76 @@ const tokenExpiry = useSessionStorage<DateTime | null>('tokenExpiry', null, {
   },
 });
 
-let google: typeof window.google | null;
-useScriptTag('https://accounts.google.com/gsi/client', () => {
-  google = window.google;
+const loadGoogle = new Promise<typeof google>((resolve) => {
+  useScriptTag('https://accounts.google.com/gsi/client', () => {
+    resolve(google);
+  });
 });
 
-let gapi: typeof window.gapi | null;
-useScriptTag('https://apis.google.com/js/api.js', () => {
-  gapi = window.gapi;
+const loadGapi = new Promise<typeof gapi>((resolve) => {
+  useScriptTag('https://apis.google.com/js/api.js', () => {
+    gapi.load('client', async () => {
+      await gapi.client.init({
+        apiKey: API_KEY,
+        discoveryDocs: [DISCOVERY_DOC],
+      });
 
-  gapi.load('client', async () => {
-    await gapi?.client.init({
-      apiKey: API_KEY,
-      discoveryDocs: [DISCOVERY_DOC],
-    });
+      isLoading.value = false;
 
-    isLoading.value = false;
+      watchEffect(() => {
+        if (token.value && tokenExpiry.value && tokenExpiry.value > DateTime.now()) {
+          gapi.client.setToken(token.value);
+          isAuthenticated.value = true;
+        } else {
+          isAuthenticated.value = false;
+        }
+      });
 
-    watchEffect(() => {
-      if (token.value && tokenExpiry.value && tokenExpiry.value > DateTime.now()) {
-        gapi?.client.setToken(token.value);
-        isAuthenticated.value = true;
-      } else {
-        isAuthenticated.value = false;
-      }
+      resolve(gapi);
     });
   });
 });
 
-const signIn = async () => new Promise<google.accounts.oauth2.TokenResponse>((resolve, reject) => {
-  if (!google) {
-    reject('google not loaded');
-    return;
-  }
+const signIn = async () => {
+  const google = await loadGoogle;
+  return new Promise<google.accounts.oauth2.TokenResponse>((resolve) => {
+    google.accounts.oauth2
+      .initTokenClient({
+        client_id: CLIENT_ID,
+        scope: SCOPES,
+        callback: (response) => {
+          token.value = response;
+          tokenExpiry.value = DateTime.now().plus({ seconds: Number(response.expires_in) });
+          resolve(response);
+        },
+      })
+      .requestAccessToken();
+  });
+};
 
-  google.accounts.oauth2
-    .initTokenClient({
-      client_id: CLIENT_ID,
-      scope: SCOPES,
-      callback: (response) => {
-        token.value = response;
-        tokenExpiry.value = DateTime.now().plus({ seconds: Number(response.expires_in) });
-        resolve(response);
-      },
-    })
-    .requestAccessToken();
-});
+const signOut = async () => {
+  const google = await loadGoogle;
+  return new Promise<void>((resolve, reject) => {
+    if (!token.value) {
+      reject('no token');
+      return;
+    }
 
-const signOut = async () => new Promise<void>((resolve, reject) => {
-  if (!google) {
-    reject('google not loaded');
-    return;
-  }
-
-  if (!token.value) {
-    reject('no token');
-    return;
-  }
-
-  google.accounts.oauth2
-    .revoke(token.value.access_token, () => {
-      token.value = null;
-      tokenExpiry.value = null;
-      isAuthenticated.value = false;
-      resolve();
-    });
-});
+    google.accounts.oauth2
+      .revoke(token.value.access_token, () => {
+        token.value = null;
+        tokenExpiry.value = null;
+        isAuthenticated.value = false;
+        resolve();
+      });
+  });
+};
 
 const events = ref<IEvent[]>([]);
 const { minDate, maxDate } = storeToRefs(useSettingsStore());
 const updateEvents = async () => {
+  const gapi = await loadGapi;
   try {
-    if (!gapi) {
-      throw new Error('gapi not loaded');
-    }
-
     const response = await gapi.client.calendar.events.list({
       calendarId: 'primary',
       timeMin: minDate.value.toISO(),

@@ -61,6 +61,7 @@ module.exports = {
     Capacitor: 'readonly',
     chrome: 'readonly',
     google: 'readonly',
+    gapi: 'readonly',
   },
 
   // add your custom rules here
