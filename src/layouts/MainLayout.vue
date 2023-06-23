@@ -11,29 +11,9 @@
         <q-btn
           flat
           round
-          icon="date_range"
+          icon="settings"
+          @click="dialog = true"
         >
-          <q-tooltip anchor="bottom middle" self="top middle" class="text-body2 bg-dark">
-            Working days
-          </q-tooltip>
-
-          <DateSettings/>
-        </q-btn>
-
-        <q-btn
-          flat
-          round
-          :icon="isAuthenticated ? 'face' : 'account_circle'"
-          :loading="isLoading"
-          @click="updateEvents"
-        >
-          <q-tooltip v-if="!isAuthenticated" anchor="bottom middle" self="top middle" class="text-body2 bg-dark">
-            Sign in with Google
-          </q-tooltip>
-
-          <template v-slot:loading>
-            <q-spinner/>
-          </template>
         </q-btn>
       </q-toolbar>
     </q-header>
@@ -44,12 +24,14 @@
 
     <ExportText/>
   </q-layout>
+
+  <LoginDialog v-model="dialog"/>
 </template>
 
 <script setup lang="ts">
-import DateSettings from 'src/components/DateSettings.vue';
 import ExportText from 'src/components/ExportText.vue';
-import { useGoogleCalendar } from 'src/composables/useGoogleCalendar';
+import LoginDialog from 'src/components/LoginDialog.vue';
+import { ref } from 'vue';
 
-const { updateEvents, isLoading, isAuthenticated } = useGoogleCalendar();
+const dialog = ref(true);
 </script>

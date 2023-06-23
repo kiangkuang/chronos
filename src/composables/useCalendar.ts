@@ -3,7 +3,7 @@ import { DateTime, Interval } from 'luxon';
 import { storeToRefs } from 'pinia';
 import { useSettingsStore } from 'src/stores/settings-store';
 import { ref, computed, watch } from 'vue';
-import { useGoogleCalendar } from './useGoogleCalendar';
+import { useGoogle } from './useGoogle';
 
 const selectedEvents = ref<EventApi[]>([]);
 
@@ -35,7 +35,7 @@ const toggleSelectedEvent = (event :EventApi) => {
     : [...selectedEvents.value, event];
 };
 
-const { events: _events } = useGoogleCalendar();
+const { events: _events } = useGoogle();
 const events = computed(() => [
   ..._events.value.map<EventInput>((event) => ({
     id: event.id,

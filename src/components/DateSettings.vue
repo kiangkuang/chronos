@@ -1,23 +1,19 @@
 <template>
-  <q-popup-proxy anchor="bottom right" self="top right" :offset="[0, 4]" @hide="updateEvents">
-    <q-date
-      color="blue-10"
-      range
-      multiple
-      v-model="model"
-      subtitle="Working days"/>
-  </q-popup-proxy>
+  <q-date
+    color="blue-10"
+    range
+    multiple
+    v-model="model"
+    subtitle="Working days"/>
 </template>
 
 <script setup lang="ts">
 import { DateTime } from 'luxon';
 import { storeToRefs } from 'pinia';
-import { useGoogleCalendar } from 'src/composables/useGoogleCalendar';
 import { useSettingsStore } from 'src/stores/settings-store';
 import { computed } from 'vue';
 
 const { days } = storeToRefs(useSettingsStore());
-const { updateEvents } = useGoogleCalendar();
 
 const format = 'yyyy/MM/dd';
 const model = computed({
