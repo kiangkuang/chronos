@@ -43,6 +43,8 @@ const loadGapi = new Promise<typeof gapi>((resolve) => {
           gapi.client.setToken(token.value);
           isAuthenticated.value = true;
         } else {
+          token.value = null;
+          tokenExpiry.value = null;
           isAuthenticated.value = false;
         }
       });
