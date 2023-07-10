@@ -36,7 +36,7 @@
         <p>Select your sprint days.</p>
         <DateSettings/>
         <q-stepper-navigation class="q-gutter-sm">
-          <q-btn @click="$emit('update:modelValue', false)" color="primary" icon="check" label="Done" />
+          <q-btn @click="done" color="primary" icon="check" label="Done" />
         </q-stepper-navigation>
       </q-step>
 
@@ -56,7 +56,7 @@ import { ref, watchEffect } from 'vue';
 import DateSettings from 'src/components/DateSettings.vue';
 
 defineProps(['modelValue']);
-defineEmits(['update:modelValue']);
+const emit = defineEmits(['update:modelValue']);
 
 const step = ref(1);
 
@@ -77,6 +77,11 @@ watchEffect(() => {
     updateEvents();
   }
 });
+
+const done = () => {
+  updateEvents();
+  emit('update:modelValue', false);
+};
 
 const signIn = async () => {
   await _signIn();
