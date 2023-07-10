@@ -36,7 +36,7 @@
         <p>Select your sprint days.</p>
         <DateSettings/>
         <q-stepper-navigation class="q-gutter-sm">
-          <q-btn @click="done" color="primary" icon="check" label="Done" />
+          <q-btn @click="emit('update:modelValue', false)" color="primary" icon="check" label="Done" />
         </q-stepper-navigation>
       </q-step>
 
@@ -52,11 +52,13 @@
 <script setup lang="ts">
 import { QStepper } from 'quasar';
 import { useGoogle } from 'src/composables/useGoogle';
-import { ref, watchEffect } from 'vue';
+import { ref, watch, watchEffect } from 'vue';
 import DateSettings from 'src/components/DateSettings.vue';
+import { storeToRefs } from 'pinia';
+import { useSettingsStore } from 'src/stores/settings-store';
 
-defineProps(['modelValue']);
-const emit = defineEmits(['update:modelValue']);
+defineProps<{modelValue:boolean}>();
+const emit = defineEmits<{(event: 'update:modelValue', value: boolean): void }>();
 
 const step = ref(1);
 
@@ -78,10 +80,10 @@ watchEffect(() => {
   }
 });
 
-const done = () => {
+const { days } = storeToRefs(useSettingsStore());
+watch(days, () => {
   updateEvents();
-  emit('update:modelValue', false);
-};
+});
 
 const signIn = async () => {
   await _signIn();
