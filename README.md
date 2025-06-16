@@ -2,33 +2,29 @@
 
 ## Install the dependencies
 ```bash
-yarn
-# or
-npm install
+pnpm install
 ```
 
 ### Start the app in development mode (hot-code reloading, error reporting, etc.)
 ```bash
-quasar dev
+pnpm dev
 ```
 
 
 ### Lint the files
 ```bash
-yarn lint
-# or
-npm run lint
+pnpm lint
 ```
 
 
 
 ### Build the app for production
 ```bash
-quasar build
+pnpm build
 ```
 
 ### Customize the configuration
 See [Configuring quasar.config.js](https://v2.quasar.dev/quasar-cli-vite/quasar-config-js).
 
 ### Adding test users
-https://console.cloud.google.com/apis/credentials/consent
+https://console.cloud.google.com/auth/audience
