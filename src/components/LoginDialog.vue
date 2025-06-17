@@ -20,7 +20,15 @@
       >
 
         <p v-if="isAuthenticated">Already signed in.</p>
-        <p v-else>Sign in to the Google Calendar account to load events from.</p>
+
+        <template v-else>
+          <p>Sign in to the Google Calendar account to load events from.</p>
+          <div class="text-caption">
+            By signing in, you agree to our
+            <a href="#" @click="openPrivacyPolicy" class="text-primary">Privacy Policy</a>
+          </div>
+        </template>
+
         <q-stepper-navigation class="q-gutter-sm">
           <q-btn v-if="isAuthenticated" @click="step = 2" color="primary" icon="check" label="Continue" />
           <q-btn @click="signIn" :flat="isAuthenticated" color="primary" icon="login" :label="isAuthenticated ? 'Change Account' : 'Sign In'" />
@@ -56,6 +64,7 @@ import { ref, watch, watchEffect } from 'vue';
 import DateSettings from 'src/components/DateSettings.vue';
 import { storeToRefs } from 'pinia';
 import { useSettingsStore } from 'src/stores/settings-store';
+import { useRouter } from 'vue-router';
 
 defineProps<{modelValue:boolean}>();
 const emit = defineEmits<{(event: 'update:modelValue', value: boolean): void }>();
@@ -88,5 +97,11 @@ watch(days, () => {
 const signIn = async () => {
   await _signIn();
   step.value = 2;
+};
+
+const router = useRouter();
+const openPrivacyPolicy = () => {
+  const privacyPolicyUrl = `${router.options.history?.base ?? ''}/privacy-policy.html`;
+  window.open(privacyPolicyUrl, '_blank');
 };
 </script>
