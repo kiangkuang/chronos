@@ -8,6 +8,7 @@
   "scripts": {
     "dev": "quasar dev",
     "build": "quasar build",
+    "postbuild": "cp dist/spa/index.html dist/spa/404.html",
     "build:pwa": "quasar build -m pwa",
     "lint": "eslint --fix --ext .js,.ts,.vue ./",
     "test": "echo \"No test specified\" && exit 0"
