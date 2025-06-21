@@ -25,7 +25,7 @@
           <p>Sign in to the Google Calendar account to load events from.</p>
           <div class="text-caption">
             By signing in, you agree to our
-            <a href="#" @click="openPrivacyPolicy" class="text-primary">Privacy Policy</a>
+            <router-link to="/privacy-policy" target="_blank">Privacy Policy</router-link>
           </div>
         </template>
 
@@ -64,7 +64,6 @@ import { ref, watch, watchEffect } from 'vue';
 import DateSettings from 'src/components/DateSettings.vue';
 import { storeToRefs } from 'pinia';
 import { useSettingsStore } from 'src/stores/settings-store';
-import { useRouter } from 'vue-router';
 
 defineProps<{modelValue:boolean}>();
 const emit = defineEmits<{(event: 'update:modelValue', value: boolean): void }>();
@@ -97,11 +96,5 @@ watch(days, () => {
 const signIn = async () => {
   await _signIn();
   step.value = 2;
-};
-
-const router = useRouter();
-const openPrivacyPolicy = () => {
-  const privacyPolicyUrl = `${router.options.history?.base ?? ''}/privacy-policy.html`;
-  window.open(privacyPolicyUrl, '_blank');
 };
 </script>

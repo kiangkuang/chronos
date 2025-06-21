@@ -135,14 +135,7 @@
       <div class="col-12 text-center">
         <q-separator class="q-mb-md" />
         <p class="text-caption text-grey-6">
-          <a
-            href="/chronos/privacy-policy.html"
-            target="_blank"
-            class="text-grey-6 text-decoration-none"
-            style="text-decoration: underline;"
-          >
-            Privacy Policy
-          </a>
+          <router-link to="/privacy-policy" target="_blank">Privacy Policy</router-link>
         </p>
       </div>
     </div>
