@@ -1,4 +1,6 @@
-import { StorageSerializers, useScriptTag, useSessionStorage } from '@vueuse/core';
+import {
+  StorageSerializers, useScriptTag, useSessionStorage, useLocalStorage,
+} from '@vueuse/core';
 import { storeToRefs } from 'pinia';
 import { useSettingsStore } from 'src/stores/settings-store';
 import { ref, watchEffect } from 'vue';
@@ -21,6 +23,10 @@ const tokenExpiry = useSessionStorage<DateTime | null>('tokenExpiry', null, {
     write: (value) => value?.toISO() ?? '',
   },
 });
+
+// Calendar selection
+const calendars = ref<gapi.client.calendar.CalendarListEntry[]>([]);
+const selectedCalendarIds = useLocalStorage<string[]>('selectedCalendarIds', []);
 
 const loadGoogle = new Promise<typeof google>((resolve) => {
   useScriptTag('https://accounts.google.com/gsi/client', () => {
@@ -89,26 +95,58 @@ const signOut = async () => {
   });
 };
 
+const loadCalendars = async () => {
+  const gapi = await loadGapi;
+  try {
+    const response = await gapi.client.calendar.calendarList.list();
+    calendars.value = response.result.items || [];
+    // If no valid selection, select the primary calendar by default
+    const validIds = calendars.value.map((c) => c.id);
+    const currentSelection = selectedCalendarIds.value.filter((id) => validIds.includes(id));
+    if (currentSelection.length === 0 && calendars.value.length > 0) {
+      const primary = calendars.value.find((c) => c.primary);
+      if (primary) {
+        selectedCalendarIds.value = [primary.id];
+      } else {
+        selectedCalendarIds.value = [calendars.value[0].id];
+      }
+    } else {
+      selectedCalendarIds.value = currentSelection;
+    }
+  } catch (e) {
+    // eslint-disable-next-line no-console
+    console.error('Error loading calendars:', e);
+    Notify.create({
+      icon: 'error',
+      message: 'Failed to load calendars',
+      caption: 'Try again later',
+      color: 'negative',
+      position: 'top-right',
+      progress: true,
+    });
+  }
+};
+
 const events = ref<IEvent[]>([]);
 const { minDate, maxDate } = storeToRefs(useSettingsStore());
 const updateEvents = async () => {
   const gapi = await loadGapi;
   try {
-    const response = await gapi.client.calendar.events.list({
-      calendarId: 'primary',
-      timeMin: minDate.value.toISO(),
-      timeMax: maxDate.value.toISO(),
-      showDeleted: false,
-      singleEvents: true,
-    });
-
-    events.value = response.result.items.filter((event) => event.attendees?.find((attendee) => attendee.self && attendee.responseStatus !== 'declined'));
+    const results = await Promise.all(
+      selectedCalendarIds.value.map((calendarId) => gapi.client.calendar.events.list({
+        calendarId,
+        timeMin: minDate.value.toISO(),
+        timeMax: maxDate.value.toISO(),
+        showDeleted: false,
+        singleEvents: true,
+      })),
+    );
+    const allEvents: IEvent[] = results.flatMap((response) => (response.result.items || []).filter((event) => event.attendees?.find((attendee) => attendee.self && attendee.responseStatus !== 'declined')));
+    events.value = allEvents;
   } catch (e) {
     // eslint-disable-next-line no-console
     console.error(e);
-
     signOut();
-
     Notify.create({
       icon: 'error',
       message: 'Google API error!',
@@ -126,6 +164,10 @@ export const useGoogle = () => ({
   isAuthenticated,
   signIn,
   signOut,
+
+  loadCalendars,
+  calendars,
+  selectedCalendarIds,
 
   updateEvents,
   events,
