@@ -35,4 +35,13 @@
       <router-view />
     </q-page-container>
   </q-layout>
+
+  <LoginDialog v-model="dialog"/>
 </template>
+
+<script setup lang="ts">
+import { ref } from 'vue';
+import LoginDialog from 'components/LoginDialog.vue';
+
+const dialog = ref(false);
+</script>
