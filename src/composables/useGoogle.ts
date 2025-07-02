@@ -141,8 +141,10 @@ const updateEvents = async () => {
         singleEvents: true,
       })),
     );
-    const allEvents: IEvent[] = results.flatMap((response) => (response.result.items || []).filter((event) => event.attendees?.find((attendee) => attendee.self && attendee.responseStatus !== 'declined')));
-    events.value = allEvents;
+
+    events.value = results
+      .flatMap((response) => (response.result.items || []))
+      .filter((event) => event.attendees?.find((attendee) => attendee.self && attendee.responseStatus !== 'declined') ?? true);
   } catch (e) {
     // eslint-disable-next-line no-console
     console.error(e);
