@@ -6,7 +6,6 @@ import { useSettingsStore } from 'src/stores/settings-store';
 import { ref, watchEffect } from 'vue';
 import { Notify } from 'quasar';
 import { DateTime } from 'luxon';
-import { IEvent } from '../interfaces/event';
 
 const CLIENT_ID = process.env.GOOGLE_API_CLIENT_ID || '';
 const API_KEY = process.env.GOOGLE_API_KEY;
@@ -127,7 +126,7 @@ const loadCalendars = async () => {
   }
 };
 
-const events = ref<IEvent[]>([]);
+const events = ref<gapi.client.calendar.Event[]>([]);
 const { minDate, maxDate } = storeToRefs(useSettingsStore());
 const updateEvents = async () => {
   const gapi = await loadGapi;
