@@ -7,7 +7,7 @@
   >
     <q-tooltip>Date Range</q-tooltip>
 
-    <q-icon name="date_range" />
+    <q-icon name="mdi-calendar-text" />
   </q-btn>
 
   <q-dialog v-model="showDialog">

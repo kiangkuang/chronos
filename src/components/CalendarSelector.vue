@@ -8,7 +8,7 @@
   >
     <q-tooltip>Calendar Selection</q-tooltip>
 
-    <q-icon name="calendar_today" />
+    <q-icon name="mdi-calendar-blank-multiple" />
     <q-badge
       v-if="calendars.length > 0 && selectedCalendarIds.length > 0"
       floating
