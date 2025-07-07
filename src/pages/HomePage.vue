@@ -14,15 +14,16 @@
         </p>
         <div class="q-gutter-md">
           <q-btn
-            to="/calendar"
             color="white"
             text-color="primary"
             size="lg"
-            label="Start Tracking"
-            icon="mdi-rocket-launch"
+            :label="isAuthenticated ? 'Go to Calendar' : 'Start Tracking'"
+            :icon="isAuthenticated ? 'mdi-calendar-arrow-right' : 'mdi-rocket-launch'"
+            :loading="isLoading"
             rounded
             no-caps
             class="q-px-xl"
+            @click="handleStartTracking"
           />
           <q-btn
             flat
@@ -187,15 +188,16 @@
             Join development teams who are already making smarter sprint commitments with Chronos.
           </p>
           <q-btn
-            to="/calendar"
             color="white"
             text-color="primary"
             size="xl"
-            label="Get Started Now"
-            icon="mdi-calendar-arrow-right"
+            :label="isAuthenticated ? 'Open Calendar' : 'Get Started Now'"
+            :icon="isAuthenticated ? 'mdi-calendar-arrow-right' : 'mdi-google'"
+            :loading="isLoading"
             rounded
             no-caps
             class="q-px-xl q-mb-md"
+            @click="handleStartTracking"
           />
           <div class="text-white q-mt-md" style="opacity: 0.8;">
             <q-icon name="mdi-shield-check" size="16px" class="q-mr-xs" />
@@ -232,11 +234,39 @@
 
 <script setup lang="ts">
 import { useTemplateRef } from 'vue';
+import { useGoogle } from 'src/composables/useGoogle';
+import { useRouter } from 'vue-router';
+import { Notify } from 'quasar';
 
 const featuresSection = useTemplateRef('featuresSection');
+const { isLoading, isAuthenticated, signIn } = useGoogle();
+const router = useRouter();
 
 const scrollToFeatures = () => {
   featuresSection.value?.scrollIntoView({ behavior: 'smooth' });
+};
+
+const handleStartTracking = async () => {
+  if (isAuthenticated.value) {
+    router.push('/calendar');
+    return;
+  }
+
+  try {
+    await signIn();
+    router.push('/calendar');
+  } catch (error) {
+    // eslint-disable-next-line no-console
+    console.error('Authentication failed:', error);
+    Notify.create({
+      icon: 'mdi-alert-circle',
+      message: 'Authentication failed',
+      caption: 'Please try again or check your connection',
+      color: 'negative',
+      position: 'top-right',
+      progress: true,
+    });
+  }
 };
 </script>
 

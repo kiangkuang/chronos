@@ -142,7 +142,7 @@ watch(() => isAuthenticated.value, () => {
   } else {
     step.value = 3;
   }
-});
+}, { immediate: true });
 
 watchEffect(() => {
   if (isAuthenticated.value) {
