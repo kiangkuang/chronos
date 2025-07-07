@@ -5,10 +5,10 @@
     <!-- Hero Section -->
     <div class="row justify-center items-center" style="min-height: 100vh;">
       <div class="col-12 col-md-8 text-center q-pa-xl">
-        <q-icon name="mdi-calendar-clock" size="120px" color="white" class="q-mb-lg" />
-        <h1 class="text-h1 text-white text-weight-bold q-mb-md">
+        <q-icon name="mdi-calendar-clock" size="120px" color="white" class="q-mb-md" />
+        <div class="text-h1 text-white text-weight-bold q-mb-md">
           Chronos
-        </h1>
+        </div>
         <p class="text-h5 text-white q-mb-xl" style="opacity: 0.9;">
           Master your sprint commitments with intelligent calendar tracking
         </p>
