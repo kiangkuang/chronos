@@ -1,4 +1,4 @@
-import { maxBy, minBy } from 'lodash';
+import { maxBy, minBy } from 'es-toolkit/compat';
 import { DateTime } from 'luxon';
 import { defineStore } from 'pinia';
 import { computed, ref } from 'vue';

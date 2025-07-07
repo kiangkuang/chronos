@@ -28,7 +28,7 @@
 </template>
 
 <script lang="ts" setup>
-import { groupBy, sortBy } from 'lodash';
+import { groupBy, sortBy } from 'es-toolkit';
 import { DateTime, Interval } from 'luxon';
 import {
   QPageSticky, QBtn, QPopupProxy, QEditor,
@@ -38,7 +38,9 @@ import { ref } from 'vue';
 
 const editor = ref<QEditor>();
 
-const { selectedEvents, workHours, totalHours } = useCalendar();
+const {
+  selectedEvents, workHours, totalHours, events,
+} = useCalendar();
 
 const model = ref('');
 
@@ -51,8 +53,10 @@ const createElement = (tagName: string, ...children: (Node | string)[]) => {
 };
 
 const beforeShow = () => {
-  const sorted = sortBy(selectedEvents.value, (x) => x.startStr);
-  const groupedEvents = groupBy(sorted, (x) => DateTime.fromISO(x.startStr).toFormat('MM/dd EEE'));
+  const selectedEventObjects = events.value.filter((event) => selectedEvents.value.includes(event.id ?? ''));
+
+  const sorted = sortBy(selectedEventObjects, [(event) => event.start?.toString()]);
+  const groupedEvents = groupBy(sorted, (event) => DateTime.fromISO(event.start?.toString() ?? '').toFormat('MM/dd EEE'));
 
   model.value = createElement(
     'p',
@@ -66,8 +70,8 @@ const beforeShow = () => {
       'li',
       key,
       createElement('ul', ...groupedEvents[key].map((event) => {
-        const start = DateTime.fromISO(event.startStr);
-        const end = DateTime.fromISO(event.endStr);
+        const start = DateTime.fromISO(event.start?.toString() ?? '');
+        const end = DateTime.fromISO(event.end?.toString() ?? '');
         const duration = Interval.fromDateTimes(start, end).toDuration('hours').hours;
         return createElement(
           'li',

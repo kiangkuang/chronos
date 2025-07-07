@@ -14,7 +14,7 @@ import { useSettingsStore } from 'src/stores/settings-store';
 import { storeToRefs } from 'pinia';
 import { DateTime } from 'luxon';
 
-const { events, selectedEvents, toggleSelectedEvent } = useCalendar();
+const { events, toggleSelectedEvent } = useCalendar();
 
 const { minDate, maxDate } = storeToRefs(useSettingsStore());
 
@@ -32,6 +32,8 @@ const calendarOptions = computed<CalendarOptions>(() => ({
     start: minDate.value.startOf('week').minus({ days: 1 }).toFormat('yyyy-MM-dd'), // sunday inclusive
     end: maxDate.value.endOf('week').toFormat('yyyy-MM-dd'), // sunday exclusive
   },
+  scrollTime: '09:00',
+  scrollTimeReset: false,
   businessHours: [{
     daysOfWeek: [0, 1, 2, 3, 4, 5, 6],
     startTime: '11:00',
@@ -41,26 +43,11 @@ const calendarOptions = computed<CalendarOptions>(() => ({
     startTime: '14:00',
     endTime: '18:00',
   }],
-  eventBackgroundColor: 'white',
-  eventTextColor: '#3788d8',
   eventClick: ({ el, event }) => {
     el.blur();
     toggleSelectedEvent(event);
-
-    const isSelected = selectedEvents.value.some((x) => x.id === event.id);
-
-    event.setProp('backgroundColor', isSelected ? '#3788d8' : 'white');
-    event.setProp('textColor', isSelected ? 'white' : '#3788d8');
   },
   editable: true,
-  eventDrop: (e) => {
-    toggleSelectedEvent(e.event);
-    toggleSelectedEvent(e.event);
-  },
-  eventResize: (e) => {
-    toggleSelectedEvent(e.event);
-    toggleSelectedEvent(e.event);
-  },
   selectable: true,
   select: (e) => {
     // eslint-disable-next-line no-alert
