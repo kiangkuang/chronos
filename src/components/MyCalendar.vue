@@ -1,5 +1,5 @@
 <template>
-  <FullCalendar ref="fullCalendar" :options="calendarOptions" />
+  <FullCalendar :options="calendarOptions" />
 </template>
 
 <script setup lang="ts">
@@ -9,7 +9,7 @@ import interactionPlugin from '@fullcalendar/interaction';
 import timeGridPlugin from '@fullcalendar/timegrid';
 import { CalendarOptions } from '@fullcalendar/core';
 import { useCalendar } from 'src/composables/useCalendar';
-import { computed, useTemplateRef } from 'vue';
+import { computed } from 'vue';
 import { useSettingsStore } from 'src/stores/settings-store';
 import { storeToRefs } from 'pinia';
 import { DateTime } from 'luxon';
@@ -17,8 +17,6 @@ import { DateTime } from 'luxon';
 const { events, customEvents, toggleSelectedEvent } = useCalendar();
 
 const { minDate, maxDate } = storeToRefs(useSettingsStore());
-
-const fullCalendar = useTemplateRef('fullCalendar');
 
 const calendarOptions = computed<CalendarOptions>(() => ({
   plugins: [timeGridPlugin, interactionPlugin],
