@@ -1,79 +1,85 @@
 <template>
-  <q-btn-dropdown
-    outline
+  <q-btn
+    flat
     rounded
     color="white"
-    v-model="showMenu"
   >
-    <template v-slot:label>
-      <q-tooltip>Account</q-tooltip>
+    <q-tooltip>Account</q-tooltip>
 
-      <q-icon name="account_circle" />
-    </template>
+    <q-icon name="account_circle" />
+    <q-badge
+      v-if="!isLoading && !isAuthenticated"
+      floating
+      color="negative"
+      rounded
+    />
 
-    <q-list>
-      <q-item v-if="!isAuthenticated">
-        <q-item-section>
-          <q-item-label>Not signed in</q-item-label>
-          <q-item-label caption>Sign in to Google Calendar</q-item-label>
-        </q-item-section>
-      </q-item>
-
-      <q-item v-else>
-        <q-item-section>
-          <q-item-label>Signed in</q-item-label>
-          <q-item-label caption>Connected to Google Calendar</q-item-label>
-        </q-item-section>
-      </q-item>
-
-      <q-separator />
-
-      <q-item
-        v-if="!isAuthenticated"
-        clickable
-        @click="signIn"
-        :disable="isLoading"
-      >
-        <q-item-section side>
-          <q-icon name="login" />
-        </q-item-section>
-        <q-item-section>
-          <q-item-label>Sign In</q-item-label>
-        </q-item-section>
-      </q-item>
-
-      <template v-else>
-        <q-item clickable @click="signIn">
-          <q-item-section side>
-            <q-icon name="swap_horiz" />
-          </q-item-section>
+    <q-popup-proxy v-model="showMenu">
+      <q-list class="bg-white">
+        <q-item v-if="!isAuthenticated">
           <q-item-section>
-            <q-item-label>Change Account</q-item-label>
+            <q-item-label>Not signed in</q-item-label>
+            <q-item-label caption>Sign in to Google Calendar</q-item-label>
           </q-item-section>
         </q-item>
 
-        <q-item clickable @click="signOut">
-          <q-item-section side>
-            <q-icon name="logout" />
-          </q-item-section>
+        <q-item v-else>
           <q-item-section>
-            <q-item-label>Sign Out</q-item-label>
+            <q-item-label>Signed in</q-item-label>
+            <q-item-label caption>Connected to Google Calendar</q-item-label>
           </q-item-section>
         </q-item>
-      </template>
 
-      <q-separator />
+        <q-separator />
 
-      <q-item>
-        <q-item-section>
-          <q-item-label caption>
-            By signing in, you agree to our
-            <router-link to="/privacy-policy" target="_blank" class="text-primary">Privacy Policy</router-link>
-          </q-item-label>
-        </q-item-section>
-      </q-item>
-    </q-list>
-  </q-btn-dropdown>
+        <q-item
+          v-if="!isAuthenticated"
+          clickable
+          @click="signIn"
+          :disable="isLoading"
+          v-close-popup
+        >
+          <q-item-section side>
+            <q-icon name="login" />
+          </q-item-section>
+          <q-item-section>
+            <q-item-label>Sign In</q-item-label>
+          </q-item-section>
+        </q-item>
+
+        <template v-else>
+          <q-item clickable @click="signIn" v-close-popup>
+            <q-item-section side>
+              <q-icon name="swap_horiz" />
+            </q-item-section>
+            <q-item-section>
+              <q-item-label>Change Account</q-item-label>
+            </q-item-section>
+          </q-item>
+
+          <q-item clickable @click="signOut" v-close-popup>
+            <q-item-section side>
+              <q-icon name="logout" />
+            </q-item-section>
+            <q-item-section>
+              <q-item-label>Sign Out</q-item-label>
+            </q-item-section>
+          </q-item>
+        </template>
+
+        <q-separator />
+
+        <q-item>
+          <q-item-section>
+            <q-item-label caption>
+              By signing in, you agree to our
+              <router-link to="/privacy-policy" target="_blank" class="text-primary">Privacy Policy</router-link>
+            </q-item-label>
+          </q-item-section>
+        </q-item>
+      </q-list>
+    </q-popup-proxy>
+  </q-btn>
 </template>
 
 <script setup lang="ts">
