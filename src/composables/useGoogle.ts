@@ -6,6 +6,7 @@ import { useSettingsStore } from 'src/stores/settings-store';
 import { ref, watchEffect } from 'vue';
 import { Notify } from 'quasar';
 import { DateTime } from 'luxon';
+import { orderBy } from 'es-toolkit';
 
 const CLIENT_ID = process.env.GOOGLE_API_CLIENT_ID || '';
 const API_KEY = process.env.GOOGLE_API_KEY;
@@ -98,20 +99,14 @@ const loadCalendars = async () => {
   const gapi = await loadGapi;
   try {
     const response = await gapi.client.calendar.calendarList.list();
-    calendars.value = response.result.items || [];
-    // If no valid selection, select the primary calendar by default
+    calendars.value = orderBy(response.result.items || [], [
+      (c) => !!c.primary,
+      (c) => c.summary.toLowerCase(),
+      (c) => c.description?.toLowerCase(),
+    ], ['desc', 'asc', 'asc']);
     const validIds = calendars.value.map((c) => c.id);
     const currentSelection = selectedCalendarIds.value.filter((id) => validIds.includes(id));
-    if (currentSelection.length === 0 && calendars.value.length > 0) {
-      const primary = calendars.value.find((c) => c.primary);
-      if (primary) {
-        selectedCalendarIds.value = [primary.id];
-      } else {
-        selectedCalendarIds.value = [calendars.value[0].id];
-      }
-    } else {
-      selectedCalendarIds.value = currentSelection;
-    }
+    selectedCalendarIds.value = currentSelection;
   } catch (e) {
     // eslint-disable-next-line no-console
     console.error('Error loading calendars:', e);

@@ -2,7 +2,7 @@
   <q-dialog
     :model-value="modelValue"
     @update:model-value="$emit('update:modelValue', $event)"
-    :persistent="!isAuthenticated"
+    :persistent="!isAuthenticated || selectedCalendarIds.length === 0"
   >
     <q-stepper
       v-model="step"
@@ -65,21 +65,10 @@
             type="checkbox"
             inline
           />
-
-          <div v-if="selectedCalendarIds.length" class="q-mt-md">
-            <q-card flat bordered class="q-mb-sm">
-              <q-card-section>
-                <div class="text-subtitle2">Selected Calendar</div>
-                <div class="text-body2" v-for="id in selectedCalendarIds" :key="id">
-                  {{ calendars.find(c => c.id === id)?.summary || id }}
-                </div>
-              </q-card-section>
-            </q-card>
-          </div>
         </div>
 
         <q-stepper-navigation class="q-gutter-sm">
-          <q-btn @click="step = 3" color="primary" icon="check" label="Continue" />
+          <q-btn @click="step = 3" color="primary" icon="check" label="Continue" :disable="selectedCalendarIds.length === 0" />
           <q-btn @click="step = 1" flat color="primary" icon="arrow_back" label="Back" />
         </q-stepper-navigation>
       </q-step>
