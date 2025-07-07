@@ -47,7 +47,6 @@ const calendarOptions = computed<CalendarOptions>(() => ({
     el.blur();
     toggleSelectedEvent(event);
   },
-  editable: true,
   selectable: true,
   select: (e) => {
     // eslint-disable-next-line no-alert
