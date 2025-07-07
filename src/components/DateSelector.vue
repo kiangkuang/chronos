@@ -2,30 +2,31 @@
   <q-btn
     flat
     rounded
-    :color="days.length > 0 ? 'white' : 'grey-7'"
+    color="white"
+    @click="showDialog = true"
   >
     <q-tooltip>Date Range</q-tooltip>
 
     <q-icon name="date_range" />
-
-    <q-popup-proxy v-model="showDialog">
-      <q-card style="min-width: 350px" class="bg-white">
-        <q-card-section>
-          <div class="text-h6">Select Sprint Days</div>
-          <div class="text-body2">Choose your working days for the sprint</div>
-        </q-card-section>
-
-        <q-card-section>
-          <DateSettings />
-        </q-card-section>
-
-        <q-card-actions align="right">
-          <q-btn flat label="Cancel" v-close-popup />
-          <q-btn flat label="Done" color="primary" @click="updateEvents" v-close-popup />
-        </q-card-actions>
-      </q-card>
-    </q-popup-proxy>
   </q-btn>
+
+  <q-dialog v-model="showDialog">
+    <q-card style="min-width: 350px" class="bg-white">
+      <q-card-section>
+        <div class="text-h6">Select Sprint Days</div>
+        <div class="text-body2">Choose your working days for the sprint</div>
+      </q-card-section>
+
+      <q-card-section>
+        <DateSettings />
+      </q-card-section>
+
+      <q-card-actions align="right">
+        <q-btn flat label="Cancel" v-close-popup />
+        <q-btn flat label="Done" color="primary" @click="updateEvents" v-close-popup />
+      </q-card-actions>
+    </q-card>
+  </q-dialog>
 </template>
 
 <script setup lang="ts">
