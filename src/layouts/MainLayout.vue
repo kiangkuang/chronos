@@ -13,16 +13,6 @@
         <q-btn
           flat
           round
-          icon="calendar_today"
-          to="/calendar"
-          class="q-mr-sm"
-        >
-          <q-tooltip>Calendar</q-tooltip>
-        </q-btn>
-
-        <q-btn
-          flat
-          round
           icon="settings"
           @click="dialog = true"
         >
