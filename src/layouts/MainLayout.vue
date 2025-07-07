@@ -10,7 +10,7 @@
           </router-link>
         </q-toolbar-title>
 
-        <div class="q-gutter-sm">
+        <div class="q-gutter-xs">
           <DateSelector />
           <CalendarSelector />
           <AccountMenu />
