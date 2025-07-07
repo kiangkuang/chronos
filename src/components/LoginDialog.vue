@@ -134,16 +134,18 @@ const calendarOptions = computed(() => calendars.value.map((calendar) => ({
   caption: calendar.primary ? ' (Primary)' : '',
 })));
 
-watchEffect(() => {
-  if (isAuthenticated.value) {
+watch(() => isAuthenticated.value, () => {
+  if (!isAuthenticated.value) {
+    step.value = 1;
+  } else if (selectedCalendarIds.value.length === 0) {
     step.value = 2;
   } else {
-    step.value = 1;
+    step.value = 3;
   }
 });
 
 watchEffect(() => {
-  if (step.value === 2 && isAuthenticated.value) {
+  if (isAuthenticated.value) {
     loadCalendars();
   }
 });
