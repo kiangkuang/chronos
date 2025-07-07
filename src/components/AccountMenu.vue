@@ -14,7 +14,7 @@
       rounded
     />
 
-    <q-popup-proxy v-model="showMenu">
+    <q-popup-proxy v-model="showMenu" :persistent="!isLoading && !isAuthenticated">
       <q-list class="bg-white">
         <q-item v-if="!isAuthenticated">
           <q-item-section>
@@ -37,7 +37,6 @@
           clickable
           @click="signIn"
           :disable="isLoading"
-          v-close-popup
         >
           <q-item-section side>
             <q-icon name="login" />
