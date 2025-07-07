@@ -126,7 +126,7 @@ const loadCalendars = async () => {
   }
 };
 
-const events = ref<gapi.client.calendar.Event[]>([]);
+const events = ref<(gapi.client.calendar.Event & { calendarId: string })[]>([]);
 const { minDate, maxDate } = storeToRefs(useSettingsStore());
 const updateEvents = async () => {
   const gapi = await loadGapi;
@@ -142,7 +142,10 @@ const updateEvents = async () => {
     );
 
     events.value = results
-      .flatMap((response) => (response.result.items || []))
+      .flatMap((response, index) => (response.result.items || []).map((event) => ({
+        ...event,
+        calendarId: selectedCalendarIds.value[index],
+      })))
       .filter((event) => event.attendees?.find((attendee) => attendee.self && attendee.responseStatus !== 'declined') ?? true);
   } catch (e) {
     // eslint-disable-next-line no-console
@@ -159,6 +162,11 @@ const updateEvents = async () => {
   }
 };
 
+const getCalendarColor = (calendar? : gapi.client.calendar.CalendarListEntry) => ({
+  background: calendar?.backgroundColor,
+  foreground: calendar?.foregroundColor,
+});
+
 export const useGoogle = () => ({
   isLoading,
 
@@ -172,4 +180,6 @@ export const useGoogle = () => ({
 
   updateEvents,
   events,
+
+  getCalendarColor,
 });

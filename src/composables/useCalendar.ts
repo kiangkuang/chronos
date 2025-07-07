@@ -5,6 +5,15 @@ import { useSettingsStore } from 'src/stores/settings-store';
 import { ref, computed, watch } from 'vue';
 import { useGoogle } from './useGoogle';
 
+// Default colors for fallback
+const DEFAULT_COLORS = {
+  TRANSPARENCY: '10',
+  CALENDAR_BACKGROUND: '#3788d8',
+  CALENDAR_FOREGROUND: '#000000',
+  SUPPORT_LEAVE_BACKGROUND: '#aaaaaa',
+  SUPPORT_LEAVE_FOREGROUND: '#000000',
+};
+
 const selectedEvents = ref<string[]>([]);
 
 const { days } = storeToRefs(useSettingsStore());
@@ -21,17 +30,27 @@ const totalWorkIntervals = computed(() => workDaysInterval.value.flatMap((day) =
   ];
 }));
 
-const { events: _events } = useGoogle();
+const {
+  events: _events, calendars, getCalendarColor,
+} = useGoogle();
+
 const events = computed(() => [
   ..._events.value.map<EventInput>((event) => {
     const isSelected = selectedEvents.value.includes(event.id);
+
+    // Find the calendar this event belongs to
+    const calendar = calendars.value.find((cal) => cal.id === event.calendarId);
+
+    const colors = getCalendarColor(calendar);
+
     return {
       id: event.id,
       start: event.start?.dateTime ?? event.start?.date,
       end: event.end?.dateTime ?? event.end?.date,
       title: event.summary,
-      backgroundColor: isSelected ? '#3788d8' : 'white',
-      textColor: isSelected ? 'white' : '#3788d8',
+      backgroundColor: `${colors.background ?? DEFAULT_COLORS.CALENDAR_BACKGROUND}${isSelected ? '' : DEFAULT_COLORS.TRANSPARENCY}`,
+      textColor: colors.foreground ?? DEFAULT_COLORS.CALENDAR_FOREGROUND,
+      borderColor: colors.background ?? DEFAULT_COLORS.CALENDAR_BACKGROUND,
     };
   }),
   ...workDaysInterval.value.flatMap((x) => {
@@ -43,16 +62,18 @@ const events = computed(() => [
         start: x.start.toISODate(),
         end: x.end.toISODate(),
         title: 'Support',
-        backgroundColor: selectedEvents.value.includes(`support-${x.start.toISODate()}`) ? '#3788d8' : 'white',
-        textColor: selectedEvents.value.includes(`support-${x.start.toISODate()}`) ? 'white' : '#3788d8',
+        backgroundColor: `${DEFAULT_COLORS.SUPPORT_LEAVE_BACKGROUND}${selectedEvents.value.includes(`support-${x.start.toISODate()}`) ? '' : DEFAULT_COLORS.TRANSPARENCY}`,
+        textColor: DEFAULT_COLORS.SUPPORT_LEAVE_FOREGROUND,
+        borderColor: DEFAULT_COLORS.SUPPORT_LEAVE_BACKGROUND,
       },
       {
         id: `leave-${x.start.toISODate()}`,
         start: x.start.toISODate(),
         end: x.end.toISODate(),
         title: 'Leave',
-        backgroundColor: selectedEvents.value.includes(`leave-${x.start.toISODate()}`) ? '#3788d8' : 'white',
-        textColor: selectedEvents.value.includes(`leave-${x.start.toISODate()}`) ? 'white' : '#3788d8',
+        backgroundColor: `${DEFAULT_COLORS.SUPPORT_LEAVE_BACKGROUND}${selectedEvents.value.includes(`leave-${x.start.toISODate()}`) ? '' : DEFAULT_COLORS.TRANSPARENCY}`,
+        textColor: DEFAULT_COLORS.SUPPORT_LEAVE_FOREGROUND,
+        borderColor: DEFAULT_COLORS.SUPPORT_LEAVE_BACKGROUND,
       },
     ];
   }),
