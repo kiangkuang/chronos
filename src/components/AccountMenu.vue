@@ -7,7 +7,7 @@
   >
     <q-tooltip>Account</q-tooltip>
 
-    <q-icon name="account_circle" />
+    <q-icon :name="isAuthenticated ? 'mdi-account-circle' : 'mdi-account-circle-outline'" />
     <q-badge
       v-if="!isLoading && !isAuthenticated"
       floating
