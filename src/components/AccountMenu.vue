@@ -8,12 +8,6 @@
     <q-tooltip>Account</q-tooltip>
 
     <q-icon :name="isAuthenticated ? 'mdi-account-circle' : 'mdi-account-circle-outline'" />
-    <q-badge
-      v-if="!isLoading && !isAuthenticated"
-      floating
-      color="negative"
-      rounded
-    />
   </q-btn>
 
   <q-dialog v-model="showMenu" :persistent="!isLoading && !isAuthenticated">
