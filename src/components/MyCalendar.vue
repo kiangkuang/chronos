@@ -14,7 +14,7 @@ import { useSettingsStore } from 'src/stores/settings-store';
 import { storeToRefs } from 'pinia';
 import { DateTime } from 'luxon';
 
-const { events, toggleSelectedEvent } = useCalendar();
+const { events, customEvents, toggleSelectedEvent } = useCalendar();
 
 const { minDate, maxDate } = storeToRefs(useSettingsStore());
 
@@ -57,7 +57,7 @@ const calendarOptions = computed<CalendarOptions>(() => ({
       const endISO = DateTime.fromJSDate(e.end).toISO();
 
       if (startISO && endISO) {
-        fullCalendar.value?.getApi().addEvent({
+        customEvents.value.push({
           id: crypto.randomUUID(),
           start: startISO,
           end: endISO,
@@ -66,7 +66,6 @@ const calendarOptions = computed<CalendarOptions>(() => ({
         });
       }
     }
-    fullCalendar.value?.getApi().unselect();
   },
 }));
 </script>

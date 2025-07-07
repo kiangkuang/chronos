@@ -10,8 +10,8 @@ const DEFAULT_COLORS = {
   TRANSPARENCY: '10',
   CALENDAR_BACKGROUND: '#3788d8',
   CALENDAR_FOREGROUND: '#000000',
-  SUPPORT_LEAVE_BACKGROUND: '#aaaaaa',
-  SUPPORT_LEAVE_FOREGROUND: '#000000',
+  CUSTOM_BACKGROUND: '#aaaaaa',
+  CUSTOM_FOREGROUND: '#000000',
 };
 
 const selectedEvents = ref<string[]>([]);
@@ -33,6 +33,8 @@ const totalWorkIntervals = computed(() => workDaysInterval.value.flatMap((day) =
 const {
   events: _events, calendars, getCalendarColor,
 } = useGoogle();
+
+const customEvents = ref<EventInput[]>([]);
 
 const events = computed(() => [
   ..._events.value.map<EventInput>((event) => {
@@ -62,21 +64,27 @@ const events = computed(() => [
         start: x.start.toISODate(),
         end: x.end.toISODate(),
         title: 'Support',
-        backgroundColor: `${DEFAULT_COLORS.SUPPORT_LEAVE_BACKGROUND}${selectedEvents.value.includes(`support-${x.start.toISODate()}`) ? '' : DEFAULT_COLORS.TRANSPARENCY}`,
-        textColor: DEFAULT_COLORS.SUPPORT_LEAVE_FOREGROUND,
-        borderColor: DEFAULT_COLORS.SUPPORT_LEAVE_BACKGROUND,
+        backgroundColor: `${DEFAULT_COLORS.CUSTOM_BACKGROUND}${selectedEvents.value.includes(`support-${x.start.toISODate()}`) ? '' : DEFAULT_COLORS.TRANSPARENCY}`,
+        textColor: DEFAULT_COLORS.CUSTOM_FOREGROUND,
+        borderColor: DEFAULT_COLORS.CUSTOM_BACKGROUND,
       },
       {
         id: `leave-${x.start.toISODate()}`,
         start: x.start.toISODate(),
         end: x.end.toISODate(),
         title: 'Leave',
-        backgroundColor: `${DEFAULT_COLORS.SUPPORT_LEAVE_BACKGROUND}${selectedEvents.value.includes(`leave-${x.start.toISODate()}`) ? '' : DEFAULT_COLORS.TRANSPARENCY}`,
-        textColor: DEFAULT_COLORS.SUPPORT_LEAVE_FOREGROUND,
-        borderColor: DEFAULT_COLORS.SUPPORT_LEAVE_BACKGROUND,
+        backgroundColor: `${DEFAULT_COLORS.CUSTOM_BACKGROUND}${selectedEvents.value.includes(`leave-${x.start.toISODate()}`) ? '' : DEFAULT_COLORS.TRANSPARENCY}`,
+        textColor: DEFAULT_COLORS.CUSTOM_FOREGROUND,
+        borderColor: DEFAULT_COLORS.CUSTOM_BACKGROUND,
       },
     ];
   }),
+  ...customEvents.value.map<EventInput>((event) => ({
+    ...event,
+    backgroundColor: `${DEFAULT_COLORS.CUSTOM_BACKGROUND}${selectedEvents.value.includes(event.id ?? '') ? '' : DEFAULT_COLORS.TRANSPARENCY}`,
+    textColor: DEFAULT_COLORS.CUSTOM_FOREGROUND,
+    borderColor: DEFAULT_COLORS.CUSTOM_BACKGROUND,
+  })),
 ]);
 
 const eventIntervals = computed(() => {
@@ -110,6 +118,7 @@ watch(_events, () => {
 
 export const useCalendar = () => ({
   events,
+  customEvents,
   selectedEvents,
   toggleSelectedEvent,
   workHours,
