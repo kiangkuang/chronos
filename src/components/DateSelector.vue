@@ -38,7 +38,7 @@ const {
 
 watch(days, () => {
   updateEvents();
-});
+}, { immediate: true });
 
 const showDialog = ref(false);
 watch([isLoading, isAuthenticated], () => {
