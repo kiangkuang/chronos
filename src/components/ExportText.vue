@@ -28,7 +28,7 @@
 </template>
 
 <script lang="ts" setup>
-import { groupBy, sortBy } from 'es-toolkit';
+import { groupBy, round, sortBy } from 'es-toolkit';
 import { DateTime, Interval } from 'luxon';
 import {
   QPageSticky, QBtn, QPopupProxy, QEditor,
@@ -63,8 +63,8 @@ const beforeShow = () => {
     createElement(
       'p',
       'Hours: ',
-      createElement('b', workHours.value.toString()),
-      ` / ${totalHours.value.toString()}`,
+      createElement('b', round(workHours.value, 2).toString()),
+      ` / ${round(totalHours.value, 2).toString()}`,
     ),
     createElement('ul', ...Object.keys(groupedEvents).map((key) => createElement(
       'li',
@@ -75,7 +75,7 @@ const beforeShow = () => {
         const duration = Interval.fromDateTimes(start, end).toDuration('hours').hours;
         return createElement(
           'li',
-          `[${duration}] ${event.title}`,
+          `[${round(duration, 2)}] ${event.title}`,
         );
       })),
     ))),
